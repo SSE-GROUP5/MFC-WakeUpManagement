@@ -27,6 +27,7 @@ void CWakeUpSettingDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
+	ON_BN_CLICKED(IDC_BUTTON1, &CWakeUpSettingDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -103,4 +104,23 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 
 	//property (show table lines)
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+}
+
+
+void CWakeUpSettingDlg::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	CString controller;
+	CString trigger_controller;
+	CString matter_devices;
+	CString matter_action;
+	GetDlgItem(IDC_COMBO1)->GetWindowTextW(controller);
+	GetDlgItem(IDC_COMBO2)->GetWindowTextW(trigger_controller);
+	GetDlgItem(IDC_COMBO3)->GetWindowTextW(matter_devices);
+	GetDlgItem(IDC_COMBO4)->GetWindowTextW(matter_action);
+	int nitem = m_wake_up_setting_list.InsertItem(0, controller);
+	m_wake_up_setting_list.SetItemText(nitem, 1, trigger_controller);
+	m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
+	m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
+
 }

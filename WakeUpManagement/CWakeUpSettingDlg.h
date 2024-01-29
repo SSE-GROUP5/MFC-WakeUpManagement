@@ -35,6 +35,8 @@ private:
 	CFont m_Title_Font;
 private:
 	CFont m_Table_Font;
+public:
+	afx_msg void OnBnClickedButton1();
 };
 
 
