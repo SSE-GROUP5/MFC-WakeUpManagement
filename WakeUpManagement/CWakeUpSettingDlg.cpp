@@ -5,6 +5,11 @@
 #include "WakeUpManagement.h"
 #include "CWakeUpSettingDlg.h"
 
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <nlohmann/json.hpp>
+
 
 // CWakeUpSettingDlg
 
@@ -77,33 +82,44 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.InsertColumn(2, TEXT("Matter Device"), LVCFMT_LEFT, 200);
 	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Action"), LVCFMT_LEFT, 440);
 
-	CString NameArray[10] = { TEXT("budz"), TEXT("pain"), TEXT("konan"), TEXT("nagato"), TEXT("itachi"), TEXT("tobi"), TEXT("madara"), TEXT("naruto"), TEXT("danzou"), TEXT("kakashi") };
-
-	for (int i = 0; i < 3; i++) {
-		int j = 0;
-		CString controller;
-		controller.Format(TEXT("Controller_%d"), i);
-		CString matter_device;
-		matter_device.Format(TEXT("Matter_device_%d"), i);
-		m_wake_up_setting_list.InsertItem(i, controller);
-		m_wake_up_setting_list.SetItemText(i, ++j, TEXT("Tap"));
-		m_wake_up_setting_list.SetItemText(i, ++j, matter_device);
-		m_wake_up_setting_list.SetItemText(i, ++j, TEXT("2 times: turn on; 3 times: turn off; 4 times: Toggle"));
-	}
-	for (int i = 3; i < 7; i++) {
-		int j = 0;
-		CString controller;
-		controller.Format(TEXT("Controller_%d"), i);
-		CString matter_device;
-		matter_device.Format(TEXT("Matter_device_%d"), i);
-		m_wake_up_setting_list.InsertItem(i, controller);
-		m_wake_up_setting_list.SetItemText(i, ++j, TEXT("Blink"));
-		m_wake_up_setting_list.SetItemText(i, ++j, matter_device);
-		m_wake_up_setting_list.SetItemText(i, ++j, TEXT("2 times: turn on; 3 times: turn off; 4 times: Toggle"));
-	}
+	//for (int i = 0; i < 3; i++) {
+	//	int j = 0;
+	//	CString controller;
+	//	controller.Format(TEXT("Controller_%d"), i);
+	//	CString matter_device;
+	//	matter_device.Format(TEXT("Matter_device_%d"), i);
+	//	m_wake_up_setting_list.InsertItem(i, controller);
+	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("Tap"));
+	//	m_wake_up_setting_list.SetItemText(i, ++j, matter_device);
+	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("2 times: turn on; 3 times: turn off; 4 times: Toggle"));
+	//}
+	//for (int i = 3; i < 7; i++) {
+	//	int j = 0;
+	//	CString controller;
+	//	controller.Format(TEXT("Controller_%d"), i);
+	//	CString matter_device;
+	//	matter_device.Format(TEXT("Matter_device_%d"), i);
+	//	m_wake_up_setting_list.InsertItem(i, controller);
+	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("Blink"));
+	//	m_wake_up_setting_list.SetItemText(i, ++j, matter_device);
+	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("2 times: turn on; 3 times: turn off; 4 times: Toggle"));
+	//}
 
 	//property (show table lines)
-	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	//m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	//int nCol = 1;    // to search in the second column (like your question)
+	//CString m_SearchThisItemText = _T("Banana");
+
+	//for (int i = 0; i < m_wake_up_setting_list.GetItemCount(); ++i)
+	//{
+	//	CString szText = m_wake_up_setting_list.GetItemText(i, nCol);
+	//	if (szText == m_SearchThisItemText)
+	//	{
+	//		// found it - do something
+	//		break;
+	//	}
+	//}
 }
 
 
@@ -122,5 +138,23 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	m_wake_up_setting_list.SetItemText(nitem, 1, trigger_controller);
 	m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
 	m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
+
+	nlohmann::json jsonList;
+
+	// Convert CString to std::string
+	std::string std_controller = CT2A(controller.GetBuffer());
+	std::string std_trigger_controller = CT2A(trigger_controller.GetBuffer());
+	std::string std_matter_devices = CT2A(matter_devices.GetBuffer());
+	std::string std_matter_action = CT2A(matter_action.GetBuffer());
+
+	// Add key-value pairs to the JSON object
+	jsonList[std_controller] = { std_trigger_controller, std_matter_devices, std_matter_action };
+
+	// Write JSON to file
+    //std::ofstream file("output.json");
+    //file << std::setw(4) << jsonList << std::endl;
+
+	std::ofstream file("wake_up_setting_data.json", std::ios::app);
+	file << std::setw(4) << jsonList << std::endl;
 
 }
