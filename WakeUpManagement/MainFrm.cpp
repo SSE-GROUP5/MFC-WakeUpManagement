@@ -69,7 +69,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetTitle(TEXT("Management System"));
 
 	//Set Window Size
-	MoveWindow(0, 0, 1200, 700);
+	MoveWindow(0, 0, 1800, 1000);
 
 	//Show in the center
 	CenterWindow();
@@ -116,8 +116,8 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_spliter.CreateStatic(this, 1, 2);
 
 	//Show each cell
-	m_spliter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(200, 700), pContext);
-	m_spliter.CreateView(0, 1, RUNTIME_CLASS(CDisplayView), CSize(1000, 700), pContext);
+	m_spliter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(300, 1000), pContext);
+	m_spliter.CreateView(0, 1, RUNTIME_CLASS(CDisplayView), CSize(1500, 1000), pContext);
 
 	return TRUE; //split not by default
 }
@@ -131,7 +131,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
 		m_spliter.DeleteView(0, 1);
-		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CHomeDlg), CSize(1000, 700), &Context);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CHomeDlg), CSize(1800, 1000), &Context);
 		CHomeDlg* pNewView = (CHomeDlg*)m_spliter.GetPane(0, 1);
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
@@ -143,7 +143,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
 		m_spliter.DeleteView(0, 1);
-		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CPatientRecordDlg), CSize(1000, 700), &Context);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CPatientRecordDlg), CSize(1800, 1000), &Context);
 		CPatientRecordDlg* pNewView = (CPatientRecordDlg*)m_spliter.GetPane(0, 1);
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
@@ -155,7 +155,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
 		m_spliter.DeleteView(0, 1);
-		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CDevicesSettingDlg), CSize(1000, 700), &Context);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CDevicesSettingDlg), CSize(1800, 1000), &Context);
 		CDevicesSettingDlg* pNewView = (CDevicesSettingDlg*)m_spliter.GetPane(0, 1);
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
@@ -167,7 +167,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
 		m_spliter.DeleteView(0, 1);
-		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CWakeUpSettingDlg), CSize(1000, 700), &Context);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CWakeUpSettingDlg), CSize(1800, 1000), &Context);
 		CWakeUpSettingDlg* pNewView = (CWakeUpSettingDlg*)m_spliter.GetPane(0, 1);
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();

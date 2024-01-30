@@ -62,7 +62,6 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 
-	MoveWindow(200, 0, 1000, 700);
 	// Creates a 12-point-Courier-font
 	m_Title_Font.CreatePointFont(120, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);

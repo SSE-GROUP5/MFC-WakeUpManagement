@@ -4,6 +4,11 @@
 #include "pch.h"
 #include "WakeUpManagement.h"
 #include "CDevicesSettingDlg.h"
+#include <cpr/cpr.h>
+#include <iostream>
+#include <nlohmann/json.hpp>
+
+
 
 
 // CDevicesSettingDlg
@@ -55,39 +60,47 @@ void CDevicesSettingDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	MoveWindow(200, 0, 1000, 700);
-
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
 	m_controllers.SetFont(&m_Table_Font);
 	m_matter_devices.SetFont(&m_Table_Font);
 
-	m_controllers.InsertColumn(0, TEXT("No."), LVCFMT_LEFT, 50);
-	m_controllers.InsertColumn(1, TEXT("Controller Name"), LVCFMT_LEFT, 280);
+	m_controllers.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 165);
+	m_controllers.InsertColumn(1, TEXT("Type"), LVCFMT_LEFT, 165);
 
-	for (int i = 0; i < 8; i++) {
-		int j = 0;
-		CString number;
-		number.Format(TEXT("%d"), i);
-		CString name;
-		name.Format(TEXT("Controller_%d"), i);
-		m_controllers.InsertItem(i, number);
-		m_controllers.SetItemText(i, ++j, name);
+	m_controllers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+
+
+	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
+	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
+
+	for (const auto& item : jsonList_controllers) {
+		CString id = CString(item["id"].get<std::string>().c_str());
+		CString type = CString(item["type"].get<std::string>().c_str());
+
+		// Add the data to the list control
+		int index = m_controllers.InsertItem(m_controllers.GetItemCount(), id);
+		m_controllers.SetItemText(index, 1, type);
 	}
-
 	//property (show table lines)
 	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	m_matter_devices.InsertColumn(0, TEXT("No."), LVCFMT_LEFT, 50);
-	m_matter_devices.InsertColumn(1, TEXT("Matter Devices Name"), LVCFMT_LEFT, 280);
 
-	for (int i = 0; i < 8; i++) {
-		int j = 0;
-		CString number;
-		number.Format(TEXT("%d"), i);
-		CString name;
-		name.Format(TEXT("Matter Device_%d"), i);
-		m_matter_devices.InsertItem(i, number);
-		m_matter_devices.SetItemText(i, ++j, name);
+	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 280);
+	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 250);
+	m_matter_devices.InsertColumn(1, TEXT("Type"), LVCFMT_LEFT, 250);
+
+	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
+
+	for (const auto& item : jsonList_matter_devices) {
+		CString id = CString(item["matter_id"].get<std::string>().c_str());
+		CString name = CString(item["name"].get<std::string>().c_str());
+		CString type = CString(item["type"].get<std::string>().c_str());
+
+		// Add the data to the list control
+		int index = m_matter_devices.InsertItem(m_matter_devices.GetItemCount(), id);
+		m_matter_devices.SetItemText(index, 1, name);
+		m_matter_devices.SetItemText(index, 2, type);
 	}
 
 	//property (show table lines)

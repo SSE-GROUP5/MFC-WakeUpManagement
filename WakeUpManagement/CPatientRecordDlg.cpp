@@ -54,7 +54,7 @@ void CPatientRecordDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	MoveWindow(200, 0, 1000, 700);
+
 	// Creates a 12-point-Courier-font
 	m_Title_Font.CreatePointFont(120, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);

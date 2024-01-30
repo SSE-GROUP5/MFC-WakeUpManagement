@@ -55,7 +55,6 @@ void CHomeDlg::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 
-	MoveWindow(200, 0, 1000, 700);
 	m_Font.CreatePointFont(300, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Font);
 }
