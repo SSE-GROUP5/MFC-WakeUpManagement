@@ -37,6 +37,14 @@ private:
 	CFont m_Table_Font;
 public:
 	afx_msg void OnBnClickedButton1();
+private:
+	CComboBox cb_controller;
+	CComboBox cb_trigger_controller;
+	CComboBox cb_matter_devices;
+	CComboBox cb_matter_action;
+public:
+	afx_msg void OnCbnSelchangeCombo3();
+	afx_msg void OnCbnSelchangeCombo1();
 };
 
 

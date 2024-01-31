@@ -29,10 +29,16 @@ void CWakeUpSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_wake_up_setting_list);
+	DDX_Control(pDX, IDC_COMBO1, cb_controller);
+	DDX_Control(pDX, IDC_COMBO2, cb_trigger_controller);
+	DDX_Control(pDX, IDC_COMBO3, cb_matter_devices);
+	DDX_Control(pDX, IDC_COMBO4, cb_matter_action);
 }
 
 BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWakeUpSettingDlg::OnBnClickedButton1)
+	ON_CBN_SELCHANGE(IDC_COMBO3, &CWakeUpSettingDlg::OnCbnSelchangeCombo3)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CWakeUpSettingDlg::OnCbnSelchangeCombo1)
 END_MESSAGE_MAP()
 
 
@@ -107,7 +113,27 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	//property (show table lines)
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
+	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
+	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
 
+	for (const auto& item : jsonList_controllers) {
+		CString id = CString(item["id"].get<std::string>().c_str());
+		cb_controller.AddString(id);
+	}
+
+	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
+
+	for (const auto& item : jsonList_matter_devices) {
+		CString id = CString(item["matter_id"].get<std::string>().c_str());
+		cb_matter_devices.AddString(id);
+	}
+
+	cb_controller.SetCurSel(0);
+	cb_matter_devices.SetCurSel(0);
+
+	OnCbnSelchangeCombo1();
+	OnCbnSelchangeCombo3();
 }
 
 
@@ -127,22 +153,67 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
 	m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
 
-	nlohmann::json jsonList;
+	std::string strController = CStringA(controller);
+	std::string stdTriggerController = CStringA(trigger_controller);
+	std::string stdMatterDevices = CStringA(matter_devices);
+	std::string stdMatterAction = CStringA(matter_action);
 
-	// Convert CString to std::string
-	std::string std_controller = CT2A(controller.GetBuffer());
-	std::string std_trigger_controller = CT2A(trigger_controller.GetBuffer());
-	std::string std_matter_devices = CT2A(matter_devices.GetBuffer());
-	std::string std_matter_action = CT2A(matter_action.GetBuffer());
+	cpr::Response r = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+		cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
+				   "\", \"interactive_device_action\": \"" + stdTriggerController +
+				   "\", \"target_device_id\": \"" + stdMatterDevices +
+				   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
 
-	// Add key-value pairs to the JSON object
-	jsonList[std_controller] = { std_trigger_controller, std_matter_devices, std_matter_action };
+}
 
-	// Write JSON to file
-    //std::ofstream file("output.json");
-    //file << std::setw(4) << jsonList << std::endl;
 
-	std::ofstream file("wake_up_setting_data.json", std::ios::app);
-	file << std::setw(4) << jsonList << std::endl;
+void CWakeUpSettingDlg::OnCbnSelchangeCombo3()
+{
 
+	GetDlgItem(IDC_COMBO4)->SendMessage(CB_RESETCONTENT);
+	int index = cb_matter_devices.GetCurSel();
+
+	CString str;
+	cb_matter_devices.GetLBText(index, str);
+
+	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
+
+	for (const auto& item : jsonList_matter_devices) {
+		// Check if the "matter_id" matches
+		if (item["matter_id"] == CT2A(str)) {
+			const auto& possibleActionArray = item["possible_actions"];
+
+			// Iterate through each element in the array
+			for (const auto& possibleAction : possibleActionArray) {
+				// Access properties inside each element
+				CString name = CString(possibleAction["name"].get<std::string>().c_str());
+
+				// Add the data to the combo
+				cb_matter_action.AddString(name);
+			}
+		}
+	}
+	cb_matter_action.SetCurSel(0);
+}
+
+
+void CWakeUpSettingDlg::OnCbnSelchangeCombo1()
+{
+	GetDlgItem(IDC_COMBO2)->SendMessage(CB_RESETCONTENT);
+	int index = cb_controller.GetCurSel();
+
+	CString str;
+	cb_controller.GetLBText(index, str);
+
+	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
+	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
+
+	for (const auto& item : jsonList_controllers) {
+		if (item["id"] == CT2A(str)) {
+			CString type = CString(item["type"].get<std::string>().c_str());
+			cb_trigger_controller.AddString(type);
+		}
+	}
+	cb_trigger_controller.SetCurSel(0);
 }
