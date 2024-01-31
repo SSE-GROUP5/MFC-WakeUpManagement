@@ -85,9 +85,9 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 
-	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 280);
-	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 250);
-	m_matter_devices.InsertColumn(1, TEXT("Type"), LVCFMT_LEFT, 250);
+	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 290);
+	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 230);
+	m_matter_devices.InsertColumn(1, TEXT("Type"), LVCFMT_LEFT, 230);
 
 	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
 	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);

@@ -5,10 +5,10 @@
 #include "WakeUpManagement.h"
 #include "CWakeUpSettingDlg.h"
 
+#include <cpr/cpr.h>
 #include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <nlohmann/json.hpp>
+
 
 
 // CWakeUpSettingDlg
@@ -76,49 +76,38 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	//	//title
 	//	m_wake_up_setting_list.InsertColumn(i, str[i], LVCFMT_LEFT, 120);
 	//}
-	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller"), LVCFMT_LEFT, 120);
-	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 160);
-	m_wake_up_setting_list.InsertColumn(2, TEXT("Matter Device"), LVCFMT_LEFT, 200);
-	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Action"), LVCFMT_LEFT, 440);
+	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller ID"), LVCFMT_LEFT, 320);
+	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 320);
+	m_wake_up_setting_list.InsertColumn(2, TEXT("Matter Device ID"), LVCFMT_LEFT, 320);
+	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Action"), LVCFMT_LEFT, 315);
 
-	//for (int i = 0; i < 3; i++) {
-	//	int j = 0;
-	//	CString controller;
-	//	controller.Format(TEXT("Controller_%d"), i);
-	//	CString matter_device;
-	//	matter_device.Format(TEXT("Matter_device_%d"), i);
-	//	m_wake_up_setting_list.InsertItem(i, controller);
-	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("Tap"));
-	//	m_wake_up_setting_list.SetItemText(i, ++j, matter_device);
-	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("2 times: turn on; 3 times: turn off; 4 times: Toggle"));
-	//}
-	//for (int i = 3; i < 7; i++) {
-	//	int j = 0;
-	//	CString controller;
-	//	controller.Format(TEXT("Controller_%d"), i);
-	//	CString matter_device;
-	//	matter_device.Format(TEXT("Matter_device_%d"), i);
-	//	m_wake_up_setting_list.InsertItem(i, controller);
-	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("Blink"));
-	//	m_wake_up_setting_list.SetItemText(i, ++j, matter_device);
-	//	m_wake_up_setting_list.SetItemText(i, ++j, TEXT("2 times: turn on; 3 times: turn off; 4 times: Toggle"));
-	//}
+	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
+	nlohmann::json jsonList = nlohmann::json::parse(r.text);
+
+	if (jsonList.contains("signals")) {
+		// Access the array under the "signals" key
+		const auto& signalsArray = jsonList["signals"];
+
+		// Iterate through each element in the array
+		for (const auto& item : signalsArray) {
+			// Access properties inside each element
+			CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
+			CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
+			CString target_action = CString(item["target_action"].get<std::string>().c_str());
+			CString target_id = CString(item["target_id"].get<std::string>().c_str());
+
+			// Add the data to the list control
+			int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
+			m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
+			m_wake_up_setting_list.SetItemText(index, 2, target_id);
+			m_wake_up_setting_list.SetItemText(index, 3, target_action);
+		}
+	}
 
 	//property (show table lines)
-	//m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	//int nCol = 1;    // to search in the second column (like your question)
-	//CString m_SearchThisItemText = _T("Banana");
 
-	//for (int i = 0; i < m_wake_up_setting_list.GetItemCount(); ++i)
-	//{
-	//	CString szText = m_wake_up_setting_list.GetItemText(i, nCol);
-	//	if (szText == m_SearchThisItemText)
-	//	{
-	//		// found it - do something
-	//		break;
-	//	}
-	//}
 }
 
 
