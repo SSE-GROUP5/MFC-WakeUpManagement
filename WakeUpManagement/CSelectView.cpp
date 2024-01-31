@@ -68,7 +68,7 @@ void CSelectView::OnInitialUpdate()
 	//Add Node
 	m_treeCtrl->InsertItem(TEXT("Home"), 0, 0, NULL);
 	m_treeCtrl->InsertItem(TEXT("Patient Record"), 0, 0, NULL);
-	m_treeCtrl->InsertItem(TEXT("Devices Setting"), 0, 0, NULL);
+	m_treeCtrl->InsertItem(TEXT("Devices"), 0, 0, NULL);
 	m_treeCtrl->InsertItem(TEXT("Wake Up Setting"), 0, 0, NULL);
 }
 
@@ -93,7 +93,7 @@ void CSelectView::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 		//::means api, because selectView send message to MainFrame which are different windows
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_A, (WPARAM)NM_A, (LPARAM)0);
 	} 
-	else if (str == TEXT("Devices Setting"))
+	else if (str == TEXT("Devices"))
 	{
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_B, (WPARAM)NM_B, (LPARAM)0);
 	}
