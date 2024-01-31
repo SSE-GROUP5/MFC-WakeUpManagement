@@ -153,16 +153,29 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
 	m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
 
-	std::string strController = CStringA(controller);
-	std::string stdTriggerController = CStringA(trigger_controller);
-	std::string stdMatterDevices = CStringA(matter_devices);
-	std::string stdMatterAction = CStringA(matter_action);
+	std::string strController = CT2A(controller);
+	std::string stdTriggerController = CT2A(trigger_controller);
+	std::string stdMatterDevices = CT2A(matter_devices);
+	std::string stdMatterAction = CT2A(matter_action);
 
-	cpr::Response r = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+	cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+		cpr::Header{ {"Content-Type", "application/json"} },
 		cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
 				   "\", \"interactive_device_action\": \"" + stdTriggerController +
 				   "\", \"target_device_id\": \"" + stdMatterDevices +
 				   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
+
+	if (response.status_code == 200) {
+		MessageBox(TEXT("Successly added!"));
+	}
+	else {
+		CString statusMessage;
+		statusMessage.Format(_T("HTTP Status Code: %d"), response.status_code);
+
+		// Display a message box with the status code
+		AfxMessageBox(statusMessage);
+
+	}
 
 }
 
@@ -187,10 +200,10 @@ void CWakeUpSettingDlg::OnCbnSelchangeCombo3()
 			// Iterate through each element in the array
 			for (const auto& possibleAction : possibleActionArray) {
 				// Access properties inside each element
-				CString name = CString(possibleAction["name"].get<std::string>().c_str());
+				CString action = CString(possibleAction["action"].get<std::string>().c_str());
 
 				// Add the data to the combo
-				cb_matter_action.AddString(name);
+				cb_matter_action.AddString(action);
 			}
 		}
 	}
