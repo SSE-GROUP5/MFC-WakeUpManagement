@@ -148,33 +148,49 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	GetDlgItem(IDC_COMBO2)->GetWindowTextW(trigger_controller);
 	GetDlgItem(IDC_COMBO3)->GetWindowTextW(matter_devices);
 	GetDlgItem(IDC_COMBO4)->GetWindowTextW(matter_action);
-	int nitem = m_wake_up_setting_list.InsertItem(0, controller);
-	m_wake_up_setting_list.SetItemText(nitem, 1, trigger_controller);
-	m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
-	m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
 
-	std::string strController = CT2A(controller);
-	std::string stdTriggerController = CT2A(trigger_controller);
-	std::string stdMatterDevices = CT2A(matter_devices);
-	std::string stdMatterAction = CT2A(matter_action);
-
-	cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
-		cpr::Header{ {"Content-Type", "application/json"} },
-		cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
-				   "\", \"interactive_device_action\": \"" + stdTriggerController +
-				   "\", \"target_device_id\": \"" + stdMatterDevices +
-				   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
-
-	if (response.status_code == 200) {
-		MessageBox(TEXT("Successly added!"));
+	boolean postRequest = true;
+	for (int i = 0; i < m_wake_up_setting_list.GetItemCount(); ++i) {
+		if (m_wake_up_setting_list.GetItemText(i, 0) == controller &&
+			m_wake_up_setting_list.GetItemText(i, 1) == trigger_controller &&
+			m_wake_up_setting_list.GetItemText(i, 2) == matter_devices &&
+			m_wake_up_setting_list.GetItemText(i, 3) == matter_action) {
+			// Item already exists, handle accordingly (e.g., show a message)
+			MessageBox(TEXT("You already have the setting!"));
+			postRequest = false;
+			break;
+		}
 	}
-	else {
-		CString statusMessage;
-		statusMessage.Format(_T("HTTP Status Code: %d"), response.status_code);
 
-		// Display a message box with the status code
-		AfxMessageBox(statusMessage);
+	if (postRequest) {
+		int nitem = m_wake_up_setting_list.InsertItem(0, controller);
+		m_wake_up_setting_list.SetItemText(nitem, 1, trigger_controller);
+		m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
+		m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
 
+		std::string strController = CT2A(controller);
+		std::string stdTriggerController = CT2A(trigger_controller);
+		std::string stdMatterDevices = CT2A(matter_devices);
+		std::string stdMatterAction = CT2A(matter_action);
+
+		cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+			cpr::Header{ {"Content-Type", "application/json"} },
+			cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
+					   "\", \"interactive_device_action\": \"" + stdTriggerController +
+					   "\", \"target_device_id\": \"" + stdMatterDevices +
+					   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
+
+		if (response.status_code == 200) {
+			MessageBox(TEXT("Successly added!"));
+		}
+		else {
+			CString statusMessage;
+			statusMessage.Format(_T("Failed! HTTP Status Code: %d"), response.status_code);
+
+			// Display a message box with the status code
+			AfxMessageBox(statusMessage);
+
+		}
 	}
 
 }
