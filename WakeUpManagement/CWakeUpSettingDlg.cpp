@@ -86,7 +86,26 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 320);
 	m_wake_up_setting_list.InsertColumn(2, TEXT("Matter Device ID"), LVCFMT_LEFT, 320);
 	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Action"), LVCFMT_LEFT, 315);
+	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
+	GetRequestSignals();
+	GetRequestControllers();
+	GetRequestMatterDevices();
+
+	cb_controller.SetCurSel(0);
+	cb_matter_devices.SetCurSel(0);
+
+	if (cb_controller.GetCount() != 0) {
+		OnCbnSelchangeCombo1();
+	}
+	if (cb_matter_devices.GetCount() != 0) {
+		OnCbnSelchangeCombo3();
+	}
+}
+
+void CWakeUpSettingDlg::GetRequestSignals()
+{
+	m_wake_up_setting_list.DeleteAllItems();
 	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 
@@ -110,9 +129,10 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 		}
 	}
 
-	//property (show table lines)
-	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+}
 
+void CWakeUpSettingDlg::GetRequestControllers()
+{
 	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
 	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
 
@@ -120,7 +140,10 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 		CString id = CString(item["id"].get<std::string>().c_str());
 		cb_controller.AddString(id);
 	}
+}
 
+void CWakeUpSettingDlg::GetRequestMatterDevices()
+{
 	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
 	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
 
@@ -128,18 +151,7 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 		CString id = CString(item["matter_id"].get<std::string>().c_str());
 		cb_matter_devices.AddString(id);
 	}
-
-	cb_controller.SetCurSel(0);
-	cb_matter_devices.SetCurSel(0);
-
-	if (cb_controller.GetCount() != 0) {
-		OnCbnSelchangeCombo1();
-	}
-	if (cb_matter_devices.GetCount() != 0) {
-		OnCbnSelchangeCombo3();
-	}
 }
-
 
 void CWakeUpSettingDlg::OnBnClickedButton1()
 {
@@ -148,10 +160,10 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	CString trigger_controller;
 	CString matter_devices;
 	CString matter_action;
-	GetDlgItem(IDC_COMBO1)->GetWindowTextW(controller);
-	GetDlgItem(IDC_COMBO2)->GetWindowTextW(trigger_controller);
-	GetDlgItem(IDC_COMBO3)->GetWindowTextW(matter_devices);
-	GetDlgItem(IDC_COMBO4)->GetWindowTextW(matter_action);
+	cb_controller.GetWindowTextW(controller);
+	cb_trigger_controller.GetWindowTextW(trigger_controller);
+	cb_matter_devices.GetWindowTextW(matter_devices);
+	cb_matter_action.GetWindowTextW(matter_action);
 
 	boolean postRequest = true;
 	for (int i = 0; i < m_wake_up_setting_list.GetItemCount(); ++i) {
@@ -167,11 +179,6 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	}
 
 	if (postRequest) {
-		int nitem = m_wake_up_setting_list.InsertItem(0, controller);
-		m_wake_up_setting_list.SetItemText(nitem, 1, trigger_controller);
-		m_wake_up_setting_list.SetItemText(nitem, 2, matter_devices);
-		m_wake_up_setting_list.SetItemText(nitem, 3, matter_action);
-
 		std::string strController = CT2A(controller);
 		std::string stdTriggerController = CT2A(trigger_controller);
 		std::string stdMatterDevices = CT2A(matter_devices);
@@ -185,11 +192,12 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 					   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
 
 		if (response.status_code == 200) {
+			GetRequestSignals();
 			MessageBox(TEXT("Successly added!"));
 		}
 		else {
 			CString statusMessage;
-			statusMessage.Format(_T("Failed! HTTP Status Code: %d"), response.status_code);
+			statusMessage.Format(_T("Failed! Please Check Your Input! HTTP Status Code: %d"), response.status_code);
 
 			// Display a message box with the status code
 			AfxMessageBox(statusMessage);

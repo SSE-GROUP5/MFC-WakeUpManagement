@@ -125,9 +125,9 @@ void CPatientRecordDlg::OnBnClickedButton1()
 
 	boolean postRequest = true;
 	for (int i = 0; i < m_patient_record.GetItemCount(); ++i) {
-		if (m_patient_record.GetItemText(i, 0) == edit_first_name &&
-			m_patient_record.GetItemText(i, 1) == edit_last_name &&
-			m_patient_record.GetItemText(i, 2) == edit_gosh_id) {
+		if (m_patient_record.GetItemText(i, 1) == edit_first_name &&
+			m_patient_record.GetItemText(i, 2) == edit_last_name &&
+			m_patient_record.GetItemText(i, 3) == edit_gosh_id) {
 			// Item already exists, handle accordingly (e.g., show a message)
 			MessageBox(TEXT("The patient already has been recorded!"));
 			postRequest = false;
@@ -152,7 +152,7 @@ void CPatientRecordDlg::OnBnClickedButton1()
 		}
 		else {
 			CString statusMessage;
-			statusMessage.Format(_T("Invaid inputs! HTTP Status Code: %d"), response.status_code);
+			statusMessage.Format(_T("Failed! Please Check Your Input! HTTP Status Code: %d"), response.status_code);
 
 			// Display a message box with the status code
 			AfxMessageBox(statusMessage);

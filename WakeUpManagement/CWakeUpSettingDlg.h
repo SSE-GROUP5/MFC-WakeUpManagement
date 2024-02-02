@@ -45,6 +45,10 @@ private:
 public:
 	afx_msg void OnCbnSelchangeCombo3();
 	afx_msg void OnCbnSelchangeCombo1();
+private:
+	void GetRequestSignals();
+	void GetRequestControllers();
+	void GetRequestMatterDevices();
 };
 
 
