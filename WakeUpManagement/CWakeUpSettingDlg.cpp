@@ -132,8 +132,12 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	cb_controller.SetCurSel(0);
 	cb_matter_devices.SetCurSel(0);
 
-	OnCbnSelchangeCombo1();
-	OnCbnSelchangeCombo3();
+	if (cb_controller.GetCount() != 0) {
+		OnCbnSelchangeCombo1();
+	}
+	if (cb_matter_devices.GetCount() != 0) {
+		OnCbnSelchangeCombo3();
+	}
 }
 
 

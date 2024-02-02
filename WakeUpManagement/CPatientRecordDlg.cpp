@@ -4,7 +4,9 @@
 #include "pch.h"
 #include "WakeUpManagement.h"
 #include "CPatientRecordDlg.h"
-
+#include <cpr/cpr.h>
+#include <iostream>
+#include <nlohmann/json.hpp>
 
 // CPatientRecordDlg
 
@@ -64,20 +66,32 @@ void CPatientRecordDlg::OnInitialUpdate()
 	m_patient_record.SetFont(&m_Table_Font);
 
 	// TODO: Add your specialized code here and/or call the base class
-	CString str[] = { TEXT("Name"), TEXT("Gender"), TEXT("DOB"), TEXT("Vision/Sound") };
-	for (int i = 0; i < 4; i++) {
-		//title
-		m_patient_record.InsertColumn(i, str[i], LVCFMT_LEFT, 200);
-	}
 
-	CString NameArray[10] = { TEXT("budz"), TEXT("pain"), TEXT("konan"), TEXT("nagato"), TEXT("itachi"), TEXT("tobi"), TEXT("madara"), TEXT("naruto"), TEXT("danzou"), TEXT("kakashi") };
+	m_patient_record.InsertColumn(0, TEXT("Wake Up System ID"), LVCFMT_LEFT, 500);
+	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_LEFT, 245);
+	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_LEFT, 245);
+	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_LEFT, 250);
 
-	for (int i = 0; i < 10; i++) {
-		int j = 0;
-		m_patient_record.InsertItem(i, NameArray[i]);
-		m_patient_record.SetItemText(i, ++j, TEXT("Female"));
-		m_patient_record.SetItemText(i, ++j, TEXT("22/1/1990"));
-		m_patient_record.SetItemText(i, ++j, TEXT("Vision"));
+	//CString str[] = { TEXT("Wake Up System ID"), TEXT("First Name"), TEXT("Last Name"), TEXT("Gosh ID") };
+	//for (int i = 0; i < 4; i++) {
+	//	//title
+	//	m_patient_record.InsertColumn(i, str[i], LVCFMT_LEFT, 200);
+	//}
+
+	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
+	nlohmann::json jsonList = nlohmann::json::parse(r.text);
+
+	for (const auto& item : jsonList) {
+		CString id = CString(item["id"].get<std::string>().c_str());
+		CString first_name = CString(item["first_name"].get<std::string>().c_str());
+		CString last_name = CString(item["last_name"].get<std::string>().c_str());
+		CString gosh_id = CString(item["gosh_id"].get<std::string>().c_str());
+
+		// Add the data to the list control
+		int index = m_patient_record.InsertItem(m_patient_record.GetItemCount(), id);
+		m_patient_record.SetItemText(index, 1, first_name);
+		m_patient_record.SetItemText(index, 2, last_name);
+		m_patient_record.SetItemText(index, 3, gosh_id);
 	}
 
 	//property (show table lines)
