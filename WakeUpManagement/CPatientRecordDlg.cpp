@@ -60,7 +60,6 @@ void CPatientRecordDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-
 	// Creates a 12-point-Courier-font
 	m_Title_Font.CreatePointFont(120, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
@@ -75,21 +74,9 @@ void CPatientRecordDlg::OnInitialUpdate()
 	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_LEFT, 245);
 	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_LEFT, 245);
 	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_LEFT, 250);
-
-	//CString str[] = { TEXT("Wake Up System ID"), TEXT("First Name"), TEXT("Last Name"), TEXT("Gosh ID") };
-	//for (int i = 0; i < 4; i++) {
-	//	//title
-	//	m_patient_record.InsertColumn(i, str[i], LVCFMT_LEFT, 200);
-	//}
-
-	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
-	nlohmann::json jsonList = nlohmann::json::parse(r.text);
-
-	getRequestPatient();
-
-	//property (show table lines)
 	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
+	getRequestPatient();
 }
 
 void CPatientRecordDlg::getRequestPatient()

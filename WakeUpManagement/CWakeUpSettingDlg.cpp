@@ -76,12 +76,6 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
 	m_wake_up_setting_list.SetFont(&m_Table_Font);
 
-	// TODO: Add your specialized code here and/or call the base class
-	//CString str[] = { TEXT("Controller"), TEXT("Trigger Controller") };
-	//for (int i = 0; i < 2; i++) {
-	//	//title
-	//	m_wake_up_setting_list.InsertColumn(i, str[i], LVCFMT_LEFT, 120);
-	//}
 	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller ID"), LVCFMT_LEFT, 320);
 	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 320);
 	m_wake_up_setting_list.InsertColumn(2, TEXT("Matter Device ID"), LVCFMT_LEFT, 320);

@@ -34,6 +34,9 @@ private:
 	CListCtrl m_matter_devices;
 private:
 	CFont m_Table_Font;
+private:
+	void GetRequestControllers();
+	void GetRequestMatterDevices();
 };
 
 

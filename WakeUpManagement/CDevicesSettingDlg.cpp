@@ -66,10 +66,19 @@ void CDevicesSettingDlg::OnInitialUpdate()
 
 	m_controllers.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 165);
 	m_controllers.InsertColumn(1, TEXT("Type"), LVCFMT_LEFT, 165);
-
 	m_controllers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	GetRequestControllers();
 
+	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 290);
+	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 230);
+	m_matter_devices.InsertColumn(2, TEXT("Type"), LVCFMT_LEFT, 230);
+	m_matter_devices.SetExtendedStyle(m_matter_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	GetRequestMatterDevices();
+}
 
+void CDevicesSettingDlg::GetRequestControllers()
+{
 	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
 	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
 
@@ -81,14 +90,10 @@ void CDevicesSettingDlg::OnInitialUpdate()
 		int index = m_controllers.InsertItem(m_controllers.GetItemCount(), id);
 		m_controllers.SetItemText(index, 1, type);
 	}
-	//property (show table lines)
-	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+}
 
-
-	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 290);
-	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 230);
-	m_matter_devices.InsertColumn(2, TEXT("Type"), LVCFMT_LEFT, 230);
-
+void CDevicesSettingDlg::GetRequestMatterDevices()
+{
 	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
 	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
 
@@ -102,7 +107,4 @@ void CDevicesSettingDlg::OnInitialUpdate()
 		m_matter_devices.SetItemText(index, 1, name);
 		m_matter_devices.SetItemText(index, 2, type);
 	}
-
-	//property (show table lines)
-	m_matter_devices.SetExtendedStyle(m_matter_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 }
