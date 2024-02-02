@@ -26,9 +26,13 @@ void CPatientRecordDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_patient_record);
+	DDX_Control(pDX, IDC_EDIT1, first_name);
+	DDX_Control(pDX, IDC_EDIT2, last_name);
+	DDX_Control(pDX, IDC_EDIT3, gosh_id);
 }
 
 BEGIN_MESSAGE_MAP(CPatientRecordDlg, CFormView)
+	ON_BN_CLICKED(IDC_BUTTON1, &CPatientRecordDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -81,6 +85,19 @@ void CPatientRecordDlg::OnInitialUpdate()
 	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 
+	getRequestPatient();
+
+	//property (show table lines)
+	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+}
+
+void CPatientRecordDlg::getRequestPatient()
+{
+	m_patient_record.DeleteAllItems();
+	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
+	nlohmann::json jsonList = nlohmann::json::parse(r.text);
+
 	for (const auto& item : jsonList) {
 		CString id = CString(item["id"].get<std::string>().c_str());
 		CString first_name = CString(item["first_name"].get<std::string>().c_str());
@@ -93,8 +110,52 @@ void CPatientRecordDlg::OnInitialUpdate()
 		m_patient_record.SetItemText(index, 2, last_name);
 		m_patient_record.SetItemText(index, 3, gosh_id);
 	}
+}
 
-	//property (show table lines)
-	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
+void CPatientRecordDlg::OnBnClickedButton1()
+{
+	CString edit_first_name;
+	CString edit_last_name;
+	CString edit_gosh_id;
+
+	first_name.GetWindowTextW(edit_first_name);
+	last_name.GetWindowTextW(edit_last_name);
+	gosh_id.GetWindowTextW(edit_gosh_id);
+
+	boolean postRequest = true;
+	for (int i = 0; i < m_patient_record.GetItemCount(); ++i) {
+		if (m_patient_record.GetItemText(i, 0) == edit_first_name &&
+			m_patient_record.GetItemText(i, 1) == edit_last_name &&
+			m_patient_record.GetItemText(i, 2) == edit_gosh_id) {
+			// Item already exists, handle accordingly (e.g., show a message)
+			MessageBox(TEXT("The patient already has been recorded!"));
+			postRequest = false;
+			break;
+		}
+	}
+
+	if (postRequest) {
+		std::string str_edit_first_name = CT2A(edit_first_name);
+		std::string std_edit_last_name = CT2A(edit_last_name);
+		std::string std_edit_gosh_id = CT2A(edit_gosh_id);
+
+		cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/users" },
+			cpr::Header{ {"Content-Type", "application/json"} },
+			cpr::Body{ "{ \"first_name\": \"" + str_edit_first_name +
+					   "\", \"last_name\": \"" + std_edit_last_name +
+					   "\", \"gosh_id\": \"" + std_edit_gosh_id + "\" }" });
+
+		if (response.status_code == 200) {
+			getRequestPatient();
+			MessageBox(TEXT("Successly added!"));
+		}
+		else {
+			CString statusMessage;
+			statusMessage.Format(_T("Invaid inputs! HTTP Status Code: %d"), response.status_code);
+
+			// Display a message box with the status code
+			AfxMessageBox(statusMessage);
+		}
+	}
 }
