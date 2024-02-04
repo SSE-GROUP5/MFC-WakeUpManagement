@@ -34,6 +34,7 @@ void CWakeUpSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO3, cb_matter_devices);
 	DDX_Control(pDX, IDC_COMBO4, cb_matter_action);
 	DDX_Control(pDX, IDC_COMBO5, cb_users);
+	DDX_Control(pDX, IDC_EDIT1, edit_trigger_numbers);
 }
 
 BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
@@ -135,6 +136,45 @@ void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 
 }
 
+void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
+{
+	m_wake_up_setting_list.DeleteAllItems();
+	CString user_id;
+	int colonIndex = str.Find(_T(":"));
+	if (colonIndex != -1) {
+		user_id = str.Mid(colonIndex + 2);
+	}
+	std::string user_id_str = CT2A(user_id);
+	cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ "http://localhost:5001/signals/users/" + user_id_str });
+	nlohmann::json jsonList_signals_for_user = nlohmann::json::parse(r_signals_for_user.text);
+
+	if (jsonList_signals_for_user.contains("signals")) {
+		// Access the array under the "signals" key
+		const auto& signalsArray = jsonList_signals_for_user["signals"];
+
+		// Iterate through each element in the array
+		for (const auto& item : signalsArray) {
+			// Access properties inside each element
+
+			CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
+			CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
+			CString target_action = CString(item["target_action"].get<std::string>().c_str());
+			CString target_id = CString(item["target_id"].get<std::string>().c_str());
+
+			CString interactive_device_num_actions;
+			interactive_device_num_actions.Format(_T("%d"), item["interactive_device_num_actions"].get<int>());
+
+			// Add the data to the list control
+			int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
+			m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
+			m_wake_up_setting_list.SetItemText(index, 2, interactive_device_num_actions);
+			m_wake_up_setting_list.SetItemText(index, 3, target_id);
+			m_wake_up_setting_list.SetItemText(index, 4, target_action);
+
+		}
+	}
+}
+
 void CWakeUpSettingDlg::GetRequestControllers()
 {
 	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
@@ -179,19 +219,26 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 	// TODO: Add your control notification handler code here
 	CString controller;
 	CString trigger_controller;
+	CString trigger_numbers;
 	CString matter_devices;
 	CString matter_action;
 	cb_controller.GetWindowTextW(controller);
 	cb_trigger_controller.GetWindowTextW(trigger_controller);
+	edit_trigger_numbers.GetWindowTextW(trigger_numbers);
 	cb_matter_devices.GetWindowTextW(matter_devices);
 	cb_matter_action.GetWindowTextW(matter_action);
+	int index = cb_users.GetCurSel();
+	CString user;
+	CString user_id;
+	cb_users.GetLBText(index, user);
 
 	boolean postRequest = true;
 	for (int i = 0; i < m_wake_up_setting_list.GetItemCount(); ++i) {
 		if (m_wake_up_setting_list.GetItemText(i, 0) == controller &&
 			m_wake_up_setting_list.GetItemText(i, 1) == trigger_controller &&
-			m_wake_up_setting_list.GetItemText(i, 2) == matter_devices &&
-			m_wake_up_setting_list.GetItemText(i, 3) == matter_action) {
+			m_wake_up_setting_list.GetItemText(i, 2) == trigger_numbers &&
+			m_wake_up_setting_list.GetItemText(i, 3) == matter_devices &&
+			m_wake_up_setting_list.GetItemText(i, 4) == matter_action) {
 			// Item already exists, handle accordingly (e.g., show a message)
 			MessageBox(TEXT("You already have the setting!"));
 			postRequest = false;
@@ -204,16 +251,39 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 		std::string stdTriggerController = CT2A(trigger_controller);
 		std::string stdMatterDevices = CT2A(matter_devices);
 		std::string stdMatterAction = CT2A(matter_action);
+		std::string intTriggerNumbers = CT2A(trigger_numbers);
 
-		cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
-			cpr::Header{ {"Content-Type", "application/json"} },
-			cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
-					   "\", \"interactive_device_action\": \"" + stdTriggerController +
-					   "\", \"target_device_id\": \"" + stdMatterDevices +
-					   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
+		cpr::Response response;
+		if (user != TEXT("Default User"))
+		{
+			int colonIndex = user.Find(_T(":"));
+			if (colonIndex != -1) {
+				user_id = user.Mid(colonIndex + 2);
+			}
+			std::string strUserId = CT2A(user_id);
+
+			response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+				cpr::Header{ {"Content-Type", "application/json"} },
+				cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
+						   "\", \"interactive_device_action\": \"" + stdTriggerController +
+						   "\", \"interactive_device_num_actions\": \"" + intTriggerNumbers +
+						   "\", \"target_device_id\": \"" + stdMatterDevices +
+						   "\", \"target_action\": \"" + stdMatterAction +
+						   "\", \"user_id\": \"" + strUserId + "\" }" });
+		}
+		else
+		{
+			response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+				cpr::Header{ {"Content-Type", "application/json"} },
+				cpr::Body{ "{ \"interactive_device_id\": \"" + strController +
+						   "\", \"interactive_device_action\": \"" + stdTriggerController +
+						   "\", \"interactive_device_num_actions\": \"" + intTriggerNumbers +
+						   "\", \"target_device_id\": \"" + stdMatterDevices +
+						   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
+		}
 
 		if (response.status_code == 200) {
-			GetRequestSignalsForDefaultUser();
+			OnCbnSelchangeCombo5();
 			MessageBox(TEXT("Successly added!"));
 		}
 		else {
@@ -292,40 +362,6 @@ void CWakeUpSettingDlg::OnCbnSelchangeCombo5()
 	}
 	else 
 	{
-		m_wake_up_setting_list.DeleteAllItems();
-		CString user_id;
-		int colonIndex = str.Find(_T(":"));
-		if (colonIndex != -1) {
-			user_id = str.Mid(colonIndex + 2);
-		}
-		std::string user_id_str = CT2A(user_id);
-		cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ "http://localhost:5001/signals/users/" + user_id_str });
-		nlohmann::json jsonList_signals_for_user = nlohmann::json::parse(r_signals_for_user.text);
-
-		if (jsonList_signals_for_user.contains("signals")) {
-			// Access the array under the "signals" key
-			const auto& signalsArray = jsonList_signals_for_user["signals"];
-
-			// Iterate through each element in the array
-			for (const auto& item : signalsArray) {
-				// Access properties inside each element
-
-				CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
-				CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
-				CString target_action = CString(item["target_action"].get<std::string>().c_str());
-				CString target_id = CString(item["target_id"].get<std::string>().c_str());
-
-				CString interactive_device_num_actions;
-				interactive_device_num_actions.Format(_T("%d"), item["interactive_device_num_actions"].get<int>());
-
-				// Add the data to the list control
-				int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
-				m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
-				m_wake_up_setting_list.SetItemText(index, 2, interactive_device_num_actions);
-				m_wake_up_setting_list.SetItemText(index, 3, target_id);
-				m_wake_up_setting_list.SetItemText(index, 4, target_action);
-
-			}
-		}
+		GetRequestSignalsForAUser(str);
 	}
 }

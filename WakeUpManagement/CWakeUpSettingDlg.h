@@ -51,8 +51,11 @@ private:
 	void GetRequestControllers();
 	void GetRequestMatterDevices();
 	void GetRequestUsers();
+	void GetRequestSignalsForAUser(CString str);
 public:
 	afx_msg void OnCbnSelchangeCombo5();
+private:
+	CEdit edit_trigger_numbers;
 };
 
 
