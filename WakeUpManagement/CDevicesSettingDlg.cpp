@@ -64,15 +64,15 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_controllers.SetFont(&m_Table_Font);
 	m_matter_devices.SetFont(&m_Table_Font);
 
-	m_controllers.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 165);
+	m_controllers.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 400);
 	m_controllers.InsertColumn(1, TEXT("Type"), LVCFMT_LEFT, 165);
 	m_controllers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
 	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	GetRequestControllers();
 
 	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 290);
-	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 230);
-	m_matter_devices.InsertColumn(2, TEXT("Type"), LVCFMT_LEFT, 230);
+	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 165);
+	m_matter_devices.InsertColumn(2, TEXT("Type"), LVCFMT_LEFT, 165);
 	m_matter_devices.SetExtendedStyle(m_matter_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	GetRequestMatterDevices();
 }
