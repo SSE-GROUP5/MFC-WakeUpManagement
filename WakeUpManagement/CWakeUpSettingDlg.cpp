@@ -33,12 +33,14 @@ void CWakeUpSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO2, cb_trigger_controller);
 	DDX_Control(pDX, IDC_COMBO3, cb_matter_devices);
 	DDX_Control(pDX, IDC_COMBO4, cb_matter_action);
+	DDX_Control(pDX, IDC_COMBO5, cb_users);
 }
 
 BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWakeUpSettingDlg::OnBnClickedButton1)
 	ON_CBN_SELCHANGE(IDC_COMBO3, &CWakeUpSettingDlg::OnCbnSelchangeCombo3)
 	ON_CBN_SELCHANGE(IDC_COMBO1, &CWakeUpSettingDlg::OnCbnSelchangeCombo1)
+	ON_CBN_SELCHANGE(IDC_COMBO5, &CWakeUpSettingDlg::OnCbnSelchangeCombo5)
 END_MESSAGE_MAP()
 
 
@@ -76,13 +78,15 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
 	m_wake_up_setting_list.SetFont(&m_Table_Font);
 
-	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller ID"), LVCFMT_LEFT, 320);
-	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 320);
-	m_wake_up_setting_list.InsertColumn(2, TEXT("Matter Device ID"), LVCFMT_LEFT, 320);
-	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Action"), LVCFMT_LEFT, 315);
+	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller ID"), LVCFMT_LEFT, 350);
+	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 200);
+	m_wake_up_setting_list.InsertColumn(2, TEXT("Trigger Numbers"), LVCFMT_LEFT, 200);
+	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Device ID"), LVCFMT_LEFT, 320);
+	m_wake_up_setting_list.InsertColumn(4, TEXT("Matter Action"), LVCFMT_LEFT, 200);
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	GetRequestSignals();
+	GetRequestUsers();
+	GetRequestSignalsForDefaultUser();
 	GetRequestControllers();
 	GetRequestMatterDevices();
 
@@ -97,7 +101,7 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	}
 }
 
-void CWakeUpSettingDlg::GetRequestSignals()
+void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 {
 	m_wake_up_setting_list.DeleteAllItems();
 	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
@@ -110,16 +114,22 @@ void CWakeUpSettingDlg::GetRequestSignals()
 		// Iterate through each element in the array
 		for (const auto& item : signalsArray) {
 			// Access properties inside each element
-			CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
-			CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
-			CString target_action = CString(item["target_action"].get<std::string>().c_str());
-			CString target_id = CString(item["target_id"].get<std::string>().c_str());
+			if (item["user_id"].is_null()) {
+				CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
+				CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
+				CString target_action = CString(item["target_action"].get<std::string>().c_str());
+				CString target_id = CString(item["target_id"].get<std::string>().c_str());
 
-			// Add the data to the list control
-			int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
-			m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
-			m_wake_up_setting_list.SetItemText(index, 2, target_id);
-			m_wake_up_setting_list.SetItemText(index, 3, target_action);
+				CString interactive_device_num_actions;
+				interactive_device_num_actions.Format(_T("%d"), item["interactive_device_num_actions"].get<int>());
+
+				// Add the data to the list control
+				int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
+				m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
+				m_wake_up_setting_list.SetItemText(index, 2, interactive_device_num_actions);
+				m_wake_up_setting_list.SetItemText(index, 3, target_id);
+				m_wake_up_setting_list.SetItemText(index, 4, target_action);
+			}
 		}
 	}
 
@@ -144,6 +154,23 @@ void CWakeUpSettingDlg::GetRequestMatterDevices()
 	for (const auto& item : jsonList_matter_devices) {
 		CString id = CString(item["matter_id"].get<std::string>().c_str());
 		cb_matter_devices.AddString(id);
+	}
+}
+
+void CWakeUpSettingDlg::GetRequestUsers()
+{
+
+	cb_users.AddString(TEXT("Default User"));
+	cb_users.SetCurSel(0);
+
+	cpr::Response r_users = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
+	nlohmann::json jsonList_users = nlohmann::json::parse(r_users.text);
+
+	for (const auto& item : jsonList_users) {
+		CString first_name = CString(item["first_name"].get<std::string>().c_str());
+		CString last_name = CString(item["last_name"].get<std::string>().c_str());
+		CString id = CString(item["id"].get<std::string>().c_str());
+		cb_users.AddString(first_name + " " + last_name + ": " + id);
 	}
 }
 
@@ -186,7 +213,7 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 					   "\", \"target_action\": \"" + stdMatterAction + "\" }" });
 
 		if (response.status_code == 200) {
-			GetRequestSignals();
+			GetRequestSignalsForDefaultUser();
 			MessageBox(TEXT("Successly added!"));
 		}
 		else {
@@ -201,6 +228,25 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 
 }
 
+void CWakeUpSettingDlg::OnCbnSelchangeCombo1()
+{
+	GetDlgItem(IDC_COMBO2)->SendMessage(CB_RESETCONTENT);
+	int index = cb_controller.GetCurSel();
+
+	CString str;
+	cb_controller.GetLBText(index, str);
+
+	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
+	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
+
+	for (const auto& item : jsonList_controllers) {
+		if (item["id"] == CT2A(str)) {
+			CString type = CString(item["type"].get<std::string>().c_str());
+			cb_trigger_controller.AddString(type);
+		}
+	}
+	cb_trigger_controller.SetCurSel(0);
+}
 
 void CWakeUpSettingDlg::OnCbnSelchangeCombo3()
 {
@@ -233,22 +279,53 @@ void CWakeUpSettingDlg::OnCbnSelchangeCombo3()
 }
 
 
-void CWakeUpSettingDlg::OnCbnSelchangeCombo1()
+
+void CWakeUpSettingDlg::OnCbnSelchangeCombo5()
 {
-	GetDlgItem(IDC_COMBO2)->SendMessage(CB_RESETCONTENT);
-	int index = cb_controller.GetCurSel();
-
+	int index = cb_users.GetCurSel();
 	CString str;
-	cb_controller.GetLBText(index, str);
+	cb_users.GetLBText(index, str);
 
-	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
-	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
+	if (str == TEXT("Default User"))
+	{
+		GetRequestSignalsForDefaultUser();
+	}
+	else 
+	{
+		m_wake_up_setting_list.DeleteAllItems();
+		CString user_id;
+		int colonIndex = str.Find(_T(":"));
+		if (colonIndex != -1) {
+			user_id = str.Mid(colonIndex + 2);
+		}
+		std::string user_id_str = CT2A(user_id);
+		cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ "http://localhost:5001/signals/users/" + user_id_str });
+		nlohmann::json jsonList_signals_for_user = nlohmann::json::parse(r_signals_for_user.text);
 
-	for (const auto& item : jsonList_controllers) {
-		if (item["id"] == CT2A(str)) {
-			CString type = CString(item["type"].get<std::string>().c_str());
-			cb_trigger_controller.AddString(type);
+		if (jsonList_signals_for_user.contains("signals")) {
+			// Access the array under the "signals" key
+			const auto& signalsArray = jsonList_signals_for_user["signals"];
+
+			// Iterate through each element in the array
+			for (const auto& item : signalsArray) {
+				// Access properties inside each element
+
+				CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
+				CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
+				CString target_action = CString(item["target_action"].get<std::string>().c_str());
+				CString target_id = CString(item["target_id"].get<std::string>().c_str());
+
+				CString interactive_device_num_actions;
+				interactive_device_num_actions.Format(_T("%d"), item["interactive_device_num_actions"].get<int>());
+
+				// Add the data to the list control
+				int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
+				m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
+				m_wake_up_setting_list.SetItemText(index, 2, interactive_device_num_actions);
+				m_wake_up_setting_list.SetItemText(index, 3, target_id);
+				m_wake_up_setting_list.SetItemText(index, 4, target_action);
+
+			}
 		}
 	}
-	cb_trigger_controller.SetCurSel(0);
 }

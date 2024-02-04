@@ -42,13 +42,17 @@ private:
 	CComboBox cb_trigger_controller;
 	CComboBox cb_matter_devices;
 	CComboBox cb_matter_action;
+	CComboBox cb_users;
 public:
 	afx_msg void OnCbnSelchangeCombo3();
 	afx_msg void OnCbnSelchangeCombo1();
 private:
-	void GetRequestSignals();
+	void GetRequestSignalsForDefaultUser();
 	void GetRequestControllers();
 	void GetRequestMatterDevices();
+	void GetRequestUsers();
+public:
+	afx_msg void OnCbnSelchangeCombo5();
 };
 
 
