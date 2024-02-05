@@ -70,10 +70,8 @@ void CPatientRecordDlg::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 
-	m_patient_record.InsertColumn(0, TEXT("Wake Up System ID"), LVCFMT_LEFT, 500);
-	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_LEFT, 245);
-	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_LEFT, 245);
-	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_LEFT, 250);
+	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_LEFT, 320);
+	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_LEFT, 320);
 	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	getRequestPatient();
@@ -86,16 +84,12 @@ void CPatientRecordDlg::getRequestPatient()
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 
 	for (const auto& item : jsonList) {
-		CString id = CString(item["id"].get<std::string>().c_str());
 		CString first_name = CString(item["first_name"].get<std::string>().c_str());
 		CString last_name = CString(item["last_name"].get<std::string>().c_str());
-		CString gosh_id = CString(item["gosh_id"].get<std::string>().c_str());
 
 		// Add the data to the list control
-		int index = m_patient_record.InsertItem(m_patient_record.GetItemCount(), id);
-		m_patient_record.SetItemText(index, 1, first_name);
-		m_patient_record.SetItemText(index, 2, last_name);
-		m_patient_record.SetItemText(index, 3, gosh_id);
+		int index = m_patient_record.InsertItem(m_patient_record.GetItemCount(), first_name);
+		m_patient_record.SetItemText(index, 1, last_name);
 	}
 }
 
