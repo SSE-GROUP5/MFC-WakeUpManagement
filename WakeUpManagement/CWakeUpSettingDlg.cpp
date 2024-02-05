@@ -79,11 +79,13 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
 	m_wake_up_setting_list.SetFont(&m_Table_Font);
 
-	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller ID"), LVCFMT_LEFT, 350);
-	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Controller"), LVCFMT_LEFT, 200);
-	m_wake_up_setting_list.InsertColumn(2, TEXT("Trigger Numbers"), LVCFMT_LEFT, 200);
-	m_wake_up_setting_list.InsertColumn(3, TEXT("Matter Device ID"), LVCFMT_LEFT, 320);
-	m_wake_up_setting_list.InsertColumn(4, TEXT("Matter Action"), LVCFMT_LEFT, 200);
+
+	m_wake_up_setting_list.InsertColumn(0, TEXT("Controller ID"), LVCFMT_LEFT, 360);
+	m_wake_up_setting_list.InsertColumn(1, TEXT("Controller Name"), LVCFMT_LEFT, 170);
+	m_wake_up_setting_list.InsertColumn(2, TEXT("Trigger Controller"), LVCFMT_LEFT, 170);
+	m_wake_up_setting_list.InsertColumn(3, TEXT("Trigger Numbers"), LVCFMT_LEFT, 170);
+	m_wake_up_setting_list.InsertColumn(4, TEXT("Matter Device ID"), LVCFMT_LEFT, 250);
+	m_wake_up_setting_list.InsertColumn(5, TEXT("Matter Action"), LVCFMT_LEFT, 170);
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	GetRequestUsers();
@@ -118,6 +120,7 @@ void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 			if (item["user_id"].is_null()) {
 				CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
 				CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
+				CString interactive_device_name = CString(item["interactive_device_name"].get<std::string>().c_str());
 				CString target_action = CString(item["target_action"].get<std::string>().c_str());
 				CString target_id = CString(item["target_id"].get<std::string>().c_str());
 
@@ -126,10 +129,11 @@ void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 
 				// Add the data to the list control
 				int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
-				m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
-				m_wake_up_setting_list.SetItemText(index, 2, interactive_device_num_actions);
-				m_wake_up_setting_list.SetItemText(index, 3, target_id);
-				m_wake_up_setting_list.SetItemText(index, 4, target_action);
+				m_wake_up_setting_list.SetItemText(index, 1, interactive_device_name);
+				m_wake_up_setting_list.SetItemText(index, 2, interactive_action);
+				m_wake_up_setting_list.SetItemText(index, 3, interactive_device_num_actions);
+				m_wake_up_setting_list.SetItemText(index, 4, target_id);
+				m_wake_up_setting_list.SetItemText(index, 5, target_action);
 			}
 		}
 	}
@@ -158,6 +162,7 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 
 			CString interactive_action = CString(item["interactive_action"].get<std::string>().c_str());
 			CString interactive_id = CString(item["interactive_id"].get<std::string>().c_str());
+			CString interactive_device_name = CString(item["interactive_device_name"].get<std::string>().c_str());
 			CString target_action = CString(item["target_action"].get<std::string>().c_str());
 			CString target_id = CString(item["target_id"].get<std::string>().c_str());
 
@@ -166,10 +171,11 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 
 			// Add the data to the list control
 			int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), interactive_id);
-			m_wake_up_setting_list.SetItemText(index, 1, interactive_action);
-			m_wake_up_setting_list.SetItemText(index, 2, interactive_device_num_actions);
-			m_wake_up_setting_list.SetItemText(index, 3, target_id);
-			m_wake_up_setting_list.SetItemText(index, 4, target_action);
+			m_wake_up_setting_list.SetItemText(index, 1, interactive_device_name);
+			m_wake_up_setting_list.SetItemText(index, 2, interactive_action);
+			m_wake_up_setting_list.SetItemText(index, 3, interactive_device_num_actions);
+			m_wake_up_setting_list.SetItemText(index, 4, target_id);
+			m_wake_up_setting_list.SetItemText(index, 5, target_action);
 
 		}
 	}
@@ -210,7 +216,7 @@ void CWakeUpSettingDlg::GetRequestUsers()
 		CString first_name = CString(item["first_name"].get<std::string>().c_str());
 		CString last_name = CString(item["last_name"].get<std::string>().c_str());
 		CString id = CString(item["id"].get<std::string>().c_str());
-		cb_users.AddString(first_name + " " + last_name + ": " + id);
+		cb_users.AddString(first_name + " " + last_name + "                                                                  : " + id);
 	}
 }
 
