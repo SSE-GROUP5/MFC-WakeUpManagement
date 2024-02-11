@@ -190,6 +190,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CDeleteSignal.h" />
     <ClInclude Include="CDevicesSettingDlg.h" />
     <ClInclude Include="CDisplayView.h" />
     <ClInclude Include="CHomeDlg.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="WakeUpManagementView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDeleteSignal.cpp" />
     <ClCompile Include="CDevicesSettingDlg.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
     <ClCompile Include="CHomeDlg.cpp" />
@@ -231,6 +233,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\arrow-right.ico" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\icon2.ico" />
+    <Image Include="res\information.bmp" />
+    <Image Include="res\information.ico" />
+    <Image Include="res\information.png" />
     <Image Include="res\technology.ico" />
     <Image Include="res\WakeUpManagement.ico" />
     <Image Include="res\WakeUpManagementDoc.ico" />

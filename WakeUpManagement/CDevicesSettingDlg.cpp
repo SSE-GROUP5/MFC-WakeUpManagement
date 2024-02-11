@@ -64,23 +64,41 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_controllers.SetFont(&m_Table_Font);
 	m_matter_devices.SetFont(&m_Table_Font);
 
-	m_controllers.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 400);
-	m_controllers.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 150);
-	m_controllers.InsertColumn(2, TEXT("Type"), LVCFMT_LEFT, 150);
+	m_controllers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
+	m_controllers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
+	m_controllers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	//m_controllers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
 	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	GetRequestControllers();
 
-	m_matter_devices.InsertColumn(0, TEXT("ID"), LVCFMT_LEFT, 250);
-	m_matter_devices.InsertColumn(1, TEXT("Name"), LVCFMT_LEFT, 150);
-	m_matter_devices.InsertColumn(2, TEXT("Type"), LVCFMT_LEFT, 150);
+	m_matter_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
+	m_matter_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
+	m_matter_devices.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	m_matter_devices.SetExtendedStyle(m_matter_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	GetRequestMatterDevices();
+
+
+	//Create the ToolTip control
+	if (!m_ToolTip.Create(this))
+	{
+		TRACE0("Unable to create the ToolTip!");
+	}
+	else
+	{
+		// Add tool tips to the controls, either by hard coded string 
+		// or using the string table resource
+		CWnd* tooltip_triggers = GetDlgItem(IDC_TOOLTIP_TRIGGERS);
+		m_ToolTip.AddTool(tooltip_triggers, _T("Triggers: XXXXXXXX"));
+		CWnd* tooltip_targets = GetDlgItem(IDC_TOOLTIP_TARGETS);
+		m_ToolTip.AddTool(tooltip_targets, _T("Targets: XXXXXXXX"));
+
+		m_ToolTip.Activate(TRUE);
+	}
 }
 
 void CDevicesSettingDlg::GetRequestControllers()
 {
-	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/interactive_devices" });
+	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
 	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
 
 	for (const auto& item : jsonList_controllers) {
@@ -110,4 +128,15 @@ void CDevicesSettingDlg::GetRequestMatterDevices()
 		m_matter_devices.SetItemText(index, 1, name);
 		m_matter_devices.SetItemText(index, 2, type);
 	}
+}
+
+
+
+
+BOOL CDevicesSettingDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	m_ToolTip.RelayEvent(pMsg);
+
+	return CFormView::PreTranslateMessage(pMsg);
 }

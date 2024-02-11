@@ -37,6 +37,9 @@ private:
 private:
 	void GetRequestControllers();
 	void GetRequestMatterDevices();
+	CToolTipCtrl m_ToolTip;
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 

@@ -44,6 +44,9 @@ public:
 	afx_msg void OnBnClickedButton1();
 private:
 	void getRequestPatient();
+	CToolTipCtrl m_ToolTip;
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 

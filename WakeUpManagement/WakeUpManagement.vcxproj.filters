@@ -57,6 +57,9 @@
     <ClInclude Include="CHomeDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CDeleteSignal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WakeUpManagement.cpp">
@@ -92,6 +95,9 @@
     <ClCompile Include="CHomeDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CDeleteSignal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WakeUpManagement.rc">
@@ -114,6 +120,24 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\arrow-right.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\information.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\information.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\information.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

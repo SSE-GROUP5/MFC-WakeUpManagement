@@ -70,11 +70,26 @@ void CPatientRecordDlg::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 
-	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_LEFT, 320);
-	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_LEFT, 320);
+	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_CENTER, 215);
+	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_CENTER, 215);
+	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_CENTER, 210);
 	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	getRequestPatient();
+
+	//Create the ToolTip control
+	if (!m_ToolTip.Create(this))
+	{
+		TRACE0("Unable to create the ToolTip!");
+	}
+	else
+	{
+		// Add tool tips to the controls, either by hard coded string 
+		// or using the string table resource
+		CWnd* tooltip_gosh_id = GetDlgItem(IDC_TOOLTIP_GOSH_ID);
+		m_ToolTip.AddTool(tooltip_gosh_id, _T("Gosh ID should start with XXXXX"));
+		m_ToolTip.Activate(TRUE);
+	}
 }
 
 void CPatientRecordDlg::getRequestPatient()
@@ -86,10 +101,12 @@ void CPatientRecordDlg::getRequestPatient()
 	for (const auto& item : jsonList) {
 		CString first_name = CString(item["first_name"].get<std::string>().c_str());
 		CString last_name = CString(item["last_name"].get<std::string>().c_str());
+		CString gosh_id = CString(item["gosh_id"].get<std::string>().c_str());
 
 		// Add the data to the list control
 		int index = m_patient_record.InsertItem(m_patient_record.GetItemCount(), first_name);
 		m_patient_record.SetItemText(index, 1, last_name);
+		m_patient_record.SetItemText(index, 2, gosh_id);
 	}
 }
 
@@ -139,4 +156,12 @@ void CPatientRecordDlg::OnBnClickedButton1()
 			AfxMessageBox(statusMessage);
 		}
 	}
+}
+
+
+BOOL CPatientRecordDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	m_ToolTip.RelayEvent(pMsg);
+	return CFormView::PreTranslateMessage(pMsg);
 }

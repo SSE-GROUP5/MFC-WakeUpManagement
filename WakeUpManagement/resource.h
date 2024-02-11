@@ -15,6 +15,10 @@
 #define IDD_WAKE_UP_SETTING             317
 #define IDD_DIALOG1                     319
 #define IDD_HOME                        319
+#define IDD_DELETE_SIGNAL               322
+#define IDI_ICON_INFO                   327
+#define IDB_BITMAP1                     329
+#define IDB_BITMAP2                     334
 #define IDC_LIST1                       1000
 #define IDC_LIST2                       1001
 #define IDC_BUTTON1                     1002
@@ -29,14 +33,21 @@
 #define IDC_EDIT2                       1011
 #define IDC_EDIT3                       1012
 #define IDC_COMBO5                      1013
+#define IDC_TEXT                        1015
+#define IDC_TOOLTIP                     1016
+#define IDC_ICON_TOOLTIP                1016
+#define IDC_TOOLTIP_TRIGGERS            1016
+#define IDC_BUTTON3                     1017
+#define IDC_TOOLTIP_TARGETS             1018
+#define IDC_TOOLTIP_GOSH_ID             1019
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        322
+#define _APS_NEXT_RESOURCE_VALUE        335
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif
