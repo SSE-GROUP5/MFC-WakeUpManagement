@@ -262,6 +262,21 @@ void CWakeUpSettingDlg::OnBnClickedButton2()
 	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
 	if (pos != nullptr)
 	{
+		int index = cb_users.GetCurSel();
+		CString str;
+		cb_users.GetLBText(index, str);
+		CString user_id;
+		int colonIndex = str.Find(_T("#"));
+		if (colonIndex != -1) {
+			user_id = str.Mid(colonIndex + 1);
+		}
+		int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
+		dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
+		dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
+		dlg.trigger_value = m_wake_up_setting_list.GetItemText(nItem, 2);
+		dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
+		dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
+		dlg.user_id = user_id;
 		if (dlg.DoModal() == IDOK) 
 		{
 			OnCbnSelchangeCombo5();
