@@ -195,9 +195,11 @@
     <ClInclude Include="CDevicesSettingDlg.h" />
     <ClInclude Include="CDisplayView.h" />
     <ClInclude Include="CEditSignal.h" />
+    <ClInclude Include="CExportFhir.h" />
     <ClInclude Include="CHomeDlg.h" />
     <ClInclude Include="CPatientRecordDlg.h" />
     <ClInclude Include="CSelectView.h" />
+    <ClInclude Include="CSettings.h" />
     <ClInclude Include="CWakeUpSettingDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
@@ -214,9 +216,11 @@
     <ClCompile Include="CDevicesSettingDlg.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
     <ClCompile Include="CEditSignal.cpp" />
+    <ClCompile Include="CExportFhir.cpp" />
     <ClCompile Include="CHomeDlg.cpp" />
     <ClCompile Include="CPatientRecordDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />
+    <ClCompile Include="CSettings.cpp" />
     <ClCompile Include="CWakeUpSettingDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">

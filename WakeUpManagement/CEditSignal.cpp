@@ -54,6 +54,7 @@ BOOL CEditSignal::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	m_Title_Font.CreatePointFont(120, _T("Calibri"));
+	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	GetDlgItem(IDC_TEXT_USER_ID)->SetWindowTextW(user_id);
 	GetRequestForTriggersCombo();
 	GetRequestForTargetsCombo();

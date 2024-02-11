@@ -13,6 +13,8 @@
 #include "CDevicesSettingDlg.h"
 #include "CWakeUpSettingDlg.h"
 #include "CHomeDlg.h"
+#include "CExportFhir.h"
+#include "CSettings.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,6 +31,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_A, OnMyChange)
 	ON_MESSAGE(NM_B, OnMyChange)
 	ON_MESSAGE(NM_C, OnMyChange)
+	ON_MESSAGE(NM_D, OnMyChange)
+	ON_MESSAGE(NM_E, OnMyChange)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -169,6 +173,30 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.DeleteView(0, 1);
 		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CWakeUpSettingDlg), CSize(1800, 1000), &Context);
 		CWakeUpSettingDlg* pNewView = (CWakeUpSettingDlg*)m_spliter.GetPane(0, 1);
+		m_spliter.RecalcLayout();
+		pNewView->OnInitialUpdate();
+		m_spliter.SetActivePane(0, 1);
+	}
+	else if (wParam == NM_D)
+	{
+		Context.m_pNewViewClass = RUNTIME_CLASS(CExportFhir);
+		Context.m_pCurrentFrame = this;
+		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
+		m_spliter.DeleteView(0, 1);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CExportFhir), CSize(1800, 1000), &Context);
+		CExportFhir* pNewView = (CExportFhir*)m_spliter.GetPane(0, 1);
+		m_spliter.RecalcLayout();
+		pNewView->OnInitialUpdate();
+		m_spliter.SetActivePane(0, 1);
+	}
+	else if (wParam == NM_E)
+	{
+		Context.m_pNewViewClass = RUNTIME_CLASS(CSettings);
+		Context.m_pCurrentFrame = this;
+		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
+		m_spliter.DeleteView(0, 1);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CSettings), CSize(1800, 1000), &Context);
+		CSettings* pNewView = (CSettings*)m_spliter.GetPane(0, 1);
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);

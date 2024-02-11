@@ -33,6 +33,8 @@ void CWakeUpSettingDlg::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_wake_up_setting_list);
 	DDX_Control(pDX, IDC_COMBO5, cb_users);
+	DDX_Control(pDX, IDC_COMBO2, cb_triggers);
+	DDX_Control(pDX, IDC_COMBO1, cb_targets);
 }
 
 BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
@@ -40,6 +42,8 @@ BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWakeUpSettingDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON3, &CWakeUpSettingDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON2, &CWakeUpSettingDlg::OnBnClickedButton2)
+	ON_CBN_SELCHANGE(IDC_COMBO2, &CWakeUpSettingDlg::OnCbnSelchangeCombo2)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CWakeUpSettingDlg::OnCbnSelchangeCombo1)
 END_MESSAGE_MAP()
 
 
@@ -86,7 +90,9 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	GetRequestUsers();
-	OnCbnSelchangeCombo5();
+	GetRequestTriggers();
+	GetRequestTargets();
+	GetRequestForSignals();
 }
 
 void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
@@ -95,6 +101,20 @@ void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 
+	CString trigger_name;
+	int selectedIndex_trigger = cb_triggers.GetCurSel();
+	if (selectedIndex_trigger != CB_ERR) {
+		cb_triggers.GetLBText(selectedIndex_trigger, trigger_name);
+		// Now trigger_name contains the selected string
+	}
+
+	CString target_name;
+	int selectedIndex_target = cb_targets.GetCurSel();
+	if (selectedIndex_target != CB_ERR) {
+		cb_targets.GetLBText(selectedIndex_target, target_name);
+		// Now trigger_name contains the selected string
+	}
+
 	if (jsonList.contains("signals")) {
 		// Access the array under the "signals" key
 		const auto& signalsArray = jsonList["signals"];
@@ -102,14 +122,25 @@ void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 		// Iterate through each element in the array
 		for (const auto& item : signalsArray) {
 			// Access properties inside each element
-			if (item["user_id"].is_null()) {
+			if (item["user_id"].is_null() ) 
+			{
+				if (target_name != "All") {
+					if (target_name != CString(item["target_id"].get<std::string>().c_str())) {
+						continue;
+					}
+				}
+				if (trigger_name != "All") {
+					if ( trigger_name != CString(item["trigger_name"].get<std::string>().c_str())) {
+						continue;
+					}
+				}
 				CString trigger_name = CString(item["trigger_name"].get<std::string>().c_str());
 				CString trigger_action = CString(item["trigger_action"].get<std::string>().c_str());
 				CString target_id = CString(item["target_id"].get<std::string>().c_str());
 				CString target_action = CString(item["target_action"].get<std::string>().c_str());
 				CString trigger_num_actions;
 				trigger_num_actions.Format(_T("%d"), item["trigger_num_actions"].get<int>());
-
+				
 				// Add the data to the list control
 				int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), trigger_name);
 				m_wake_up_setting_list.SetItemText(index, 1, trigger_action);
@@ -130,6 +161,21 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 	if (colonIndex != -1) {
 		user_id = str.Mid(colonIndex + 1);
 	}
+
+	CString trigger_name;
+	int selectedIndex_trigger = cb_triggers.GetCurSel();
+	if (selectedIndex_trigger != CB_ERR) {
+		cb_triggers.GetLBText(selectedIndex_trigger, trigger_name);
+		// Now trigger_name contains the selected string
+	}
+
+	CString target_name;
+	int selectedIndex_target = cb_targets.GetCurSel();
+	if (selectedIndex_target != CB_ERR) {
+		cb_targets.GetLBText(selectedIndex_target, target_name);
+		// Now trigger_name contains the selected string
+	}
+
 	std::string user_id_str = CT2A(user_id);
 	cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ "http://localhost:5001/signals/users/" + user_id_str });
 	nlohmann::json jsonList_signals_for_user = nlohmann::json::parse(r_signals_for_user.text);
@@ -141,7 +187,16 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 		// Iterate through each element in the array
 		for (const auto& item : signalsArray) {
 			// Access properties inside each element
-
+			if (target_name != "All") {
+				if (target_name != CString(item["target_id"].get<std::string>().c_str())) {
+					continue;
+				}
+			}
+			if (trigger_name != "All") {
+				if (trigger_name != CString(item["trigger_name"].get<std::string>().c_str())) {
+					continue;
+				}
+			}
 			CString trigger_name = CString(item["trigger_name"].get<std::string>().c_str());
 			CString trigger_action = CString(item["trigger_action"].get<std::string>().c_str());
 			CString target_id = CString(item["target_id"].get<std::string>().c_str());
@@ -178,7 +233,44 @@ void CWakeUpSettingDlg::GetRequestUsers()
 	}
 }
 
+void CWakeUpSettingDlg::GetRequestTriggers()
+{
+
+	cb_triggers.AddString(TEXT("All"));
+	cb_triggers.SetCurSel(0);
+
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
+
+	for (const auto& item : jsonList_triggers) {
+		CString name = CString(item["name"].get<std::string>().c_str());
+		CString id = CString(item["id"].get<std::string>().c_str());
+		cb_triggers.AddString(name);
+	}
+}
+
+void CWakeUpSettingDlg::GetRequestTargets()
+{
+
+	cb_targets.AddString(TEXT("All"));
+	cb_targets.SetCurSel(0);
+
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
+
+	for (const auto& item : jsonList_triggers) {
+		CString name = CString(item["name"].get<std::string>().c_str());
+		CString id = CString(item["matter_id"].get<std::string>().c_str());
+		cb_targets.AddString(id);
+	}
+}
+
 void CWakeUpSettingDlg::OnCbnSelchangeCombo5()
+{
+	GetRequestForSignals();
+}
+
+void CWakeUpSettingDlg::GetRequestForSignals()
 {
 	int index = cb_users.GetCurSel();
 	CString str;
@@ -188,7 +280,7 @@ void CWakeUpSettingDlg::OnCbnSelchangeCombo5()
 	{
 		GetRequestSignalsForDefaultUser();
 	}
-	else 
+	else
 	{
 		GetRequestSignalsForAUser(str);
 	}
@@ -198,7 +290,6 @@ void CWakeUpSettingDlg::OnCbnSelchangeCombo5()
 
 	GetDlgItem(IDC_SIGNAL_NUMBER)->SetWindowTextW(TEXT("Total Signal Number: ") + total_signal_number);
 }
-
 
 void CWakeUpSettingDlg::OnBnClickedButton1()
 {
@@ -225,7 +316,7 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 		dlg.user_id = user_id;
 		if (dlg.DoModal() == IDOK) 
 		{
-			OnCbnSelchangeCombo5();
+			GetRequestForSignals();
 		}
 	}
 	else
@@ -250,7 +341,7 @@ void CWakeUpSettingDlg::OnBnClickedButton3()
 	dlg.user_id = user_id;
 	if (dlg.DoModal() == IDOK) 
 	{
-		OnCbnSelchangeCombo5();
+		GetRequestForSignals();
 	}
 }
 
@@ -279,11 +370,25 @@ void CWakeUpSettingDlg::OnBnClickedButton2()
 		dlg.user_id = user_id;
 		if (dlg.DoModal() == IDOK) 
 		{
-			OnCbnSelchangeCombo5();
+			GetRequestForSignals();
 		}
 	}
 	else
 	{
 		MessageBox(TEXT("Please select a signal!"));
 	}
+}
+
+
+void CWakeUpSettingDlg::OnCbnSelchangeCombo2()
+{
+	// TODO: Add your control notification handler code here
+	GetRequestForSignals();
+}
+
+
+void CWakeUpSettingDlg::OnCbnSelchangeCombo1()
+{
+	// TODO: Add your control notification handler code here
+	GetRequestForSignals();
 }

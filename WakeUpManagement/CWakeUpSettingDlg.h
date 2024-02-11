@@ -38,10 +38,19 @@ private:
 	CFont m_Table_Font;
 	CComboBox cb_users;
 	void GetRequestSignalsForDefaultUser();
-	void GetRequestUsers();
 	void GetRequestSignalsForAUser(CString str);
+	void GetRequestUsers();
+	void GetRequestTriggers();
+	void GetRequestTargets();
+	void GetRequestForSignals();
 public:
 	afx_msg void OnBnClickedButton2();
+private:
+	CComboBox cb_triggers;
+	CComboBox cb_targets;
+public:
+	afx_msg void OnCbnSelchangeCombo2();
+	afx_msg void OnCbnSelchangeCombo1();
 };
 
 

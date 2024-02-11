@@ -70,6 +70,8 @@ void CSelectView::OnInitialUpdate()
 	m_treeCtrl->InsertItem(TEXT("Patient Record"), 0, 0, NULL);
 	m_treeCtrl->InsertItem(TEXT("Devices"), 0, 0, NULL);
 	m_treeCtrl->InsertItem(TEXT("Wake Up Setting"), 0, 0, NULL);
+	m_treeCtrl->InsertItem(TEXT("Export (FHIR)"), 0, 0, NULL);
+	m_treeCtrl->InsertItem(TEXT("Settings"), 0, 0, NULL);
 }
 
 
@@ -100,5 +102,13 @@ void CSelectView::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 	else if (str == TEXT("Wake Up Setting"))
 	{
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_C, (WPARAM)NM_C, (LPARAM)0);
+	}
+	else if (str == TEXT("Export (FHIR)"))
+	{
+		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_D, (WPARAM)NM_D, (LPARAM)0);
+	}
+	else if (str == TEXT("Settings"))
+	{
+		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_E, (WPARAM)NM_E, (LPARAM)0);
 	}
 }
