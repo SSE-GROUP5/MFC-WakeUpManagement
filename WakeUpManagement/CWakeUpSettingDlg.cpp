@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
 	//ON_CBN_SELCHANGE(IDC_COMBO1, &CWakeUpSettingDlg::OnCbnSelchangeCombo1)
 	ON_CBN_SELCHANGE(IDC_COMBO5, &CWakeUpSettingDlg::OnCbnSelchangeCombo5)
 	//ON_BN_CLICKED(IDC_BUTTON2, &CWakeUpSettingDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON1, &CWakeUpSettingDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -90,7 +91,7 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	GetRequestUsers();
-	GetRequestSignalsForDefaultUser();
+	OnCbnSelchangeCombo5();
 	//GetRequestControllers();
 	//GetRequestMatterDevices();
 
@@ -142,9 +143,9 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 {
 	m_wake_up_setting_list.DeleteAllItems();
 	CString user_id;
-	int colonIndex = str.Find(_T(":"));
+	int colonIndex = str.Find(_T("#"));
 	if (colonIndex != -1) {
-		user_id = str.Mid(colonIndex + 2);
+		user_id = str.Mid(colonIndex + 1);
 	}
 	std::string user_id_str = CT2A(user_id);
 	cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ "http://localhost:5001/signals/users/" + user_id_str });
@@ -208,10 +209,11 @@ void CWakeUpSettingDlg::GetRequestUsers()
 	nlohmann::json jsonList_users = nlohmann::json::parse(r_users.text);
 
 	for (const auto& item : jsonList_users) {
+		CString gosh_id = CString(item["gosh_id"].get<std::string>().c_str());
 		CString first_name = CString(item["first_name"].get<std::string>().c_str());
 		CString last_name = CString(item["last_name"].get<std::string>().c_str());
 		CString id = CString(item["id"].get<std::string>().c_str());
-		cb_users.AddString(first_name + " " + last_name + "                                                                  : " + id);
+		cb_users.AddString(gosh_id + ": " + first_name + " " + last_name + "                                                                  #" + id);
 	}
 }
 //
@@ -365,21 +367,41 @@ void CWakeUpSettingDlg::OnCbnSelchangeCombo5()
 	{
 		GetRequestSignalsForAUser(str);
 	}
+
+	CString total_signal_number;
+	total_signal_number.Format(_T("%d"), m_wake_up_setting_list.GetItemCount());
+
+	GetDlgItem(IDC_SIGNAL_NUMBER)->SetWindowTextW(TEXT("Total Signal Number: ") + total_signal_number);
 }
 
 
-//void CWakeUpSettingDlg::OnBnClickedButton2()
-//{
-//
-//	CDeleteSignal dlg;
-//	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
-//	if (pos != nullptr) {
-//		int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
-//		dlg.controller_id = m_wake_up_setting_list.GetItemText(nItem, 0);
-//		dlg.controller_name = m_wake_up_setting_list.GetItemText(nItem, 1);
-//	}
-//
-//	if (dlg.DoModal() == IDOK) {
-//		OnCbnSelchangeCombo5();
-//	}
-//}
+void CWakeUpSettingDlg::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+
+	CDeleteSignal dlg;
+	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
+
+
+	int index = cb_users.GetCurSel();
+	CString str;
+	cb_users.GetLBText(index, str);
+	CString user_id;
+	int colonIndex = str.Find(_T("#"));
+	if (colonIndex != -1) {
+		user_id = str.Mid(colonIndex + 1);
+	}
+	if (pos != nullptr) {
+		int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
+		dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
+		dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
+		dlg.trigger_value = m_wake_up_setting_list.GetItemText(nItem, 2);
+		dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
+		dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
+		dlg.user_id = user_id;
+	}
+
+	if (dlg.DoModal() == IDOK) {
+		OnCbnSelchangeCombo5();
+	}
+}
