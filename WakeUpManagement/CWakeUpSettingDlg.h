@@ -40,6 +40,8 @@ private:
 	void GetRequestSignalsForDefaultUser();
 	void GetRequestUsers();
 	void GetRequestSignalsForAUser(CString str);
+public:
+	afx_msg void OnBnClickedButton2();
 };
 
 

@@ -194,6 +194,7 @@
     <ClInclude Include="CDeleteSignal.h" />
     <ClInclude Include="CDevicesSettingDlg.h" />
     <ClInclude Include="CDisplayView.h" />
+    <ClInclude Include="CEditSignal.h" />
     <ClInclude Include="CHomeDlg.h" />
     <ClInclude Include="CPatientRecordDlg.h" />
     <ClInclude Include="CSelectView.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="CDeleteSignal.cpp" />
     <ClCompile Include="CDevicesSettingDlg.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
+    <ClCompile Include="CEditSignal.cpp" />
     <ClCompile Include="CHomeDlg.cpp" />
     <ClCompile Include="CPatientRecordDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />

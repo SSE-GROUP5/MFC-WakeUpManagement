@@ -6,6 +6,7 @@
 #include "CWakeUpSettingDlg.h"
 #include "CDeleteSignal.h"
 #include "CAddSignal.h"
+#include "CEditSignal.h"
 
 #include <cpr/cpr.h>
 #include <iostream>
@@ -38,6 +39,7 @@ BEGIN_MESSAGE_MAP(CWakeUpSettingDlg, CFormView)
 	ON_CBN_SELCHANGE(IDC_COMBO5, &CWakeUpSettingDlg::OnCbnSelchangeCombo5)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWakeUpSettingDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON3, &CWakeUpSettingDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON2, &CWakeUpSettingDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -204,18 +206,16 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 
 	CDeleteSignal dlg;
 	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
-
-
-	int index = cb_users.GetCurSel();
-	CString str;
-	cb_users.GetLBText(index, str);
-	CString user_id;
-	int colonIndex = str.Find(_T("#"));
-	if (colonIndex != -1) {
-		user_id = str.Mid(colonIndex + 1);
-	}
 	if (pos != nullptr) 
 	{
+		int index = cb_users.GetCurSel();
+		CString str;
+		cb_users.GetLBText(index, str);
+		CString user_id;
+		int colonIndex = str.Find(_T("#"));
+		if (colonIndex != -1) {
+			user_id = str.Mid(colonIndex + 1);
+		}
 		int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
 		dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
 		dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
@@ -223,7 +223,8 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 		dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
 		dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
 		dlg.user_id = user_id;
-		if (dlg.DoModal() == IDOK) {
+		if (dlg.DoModal() == IDOK) 
+		{
 			OnCbnSelchangeCombo5();
 		}
 	}
@@ -238,7 +239,6 @@ void CWakeUpSettingDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
 	CAddSignal dlg;
-
 	int index = cb_users.GetCurSel();
 	CString str;
 	cb_users.GetLBText(index, str);
@@ -248,9 +248,27 @@ void CWakeUpSettingDlg::OnBnClickedButton3()
 		user_id = str.Mid(colonIndex + 1);
 	}
 	dlg.user_id = user_id;
-
-
-	if (dlg.DoModal() == IDOK) {
+	if (dlg.DoModal() == IDOK) 
+	{
 		OnCbnSelchangeCombo5();
+	}
+}
+
+
+void CWakeUpSettingDlg::OnBnClickedButton2()
+{
+	// TODO: Add your control notification handler code here
+	CEditSignal dlg;
+	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
+	if (pos != nullptr)
+	{
+		if (dlg.DoModal() == IDOK) 
+		{
+			OnCbnSelchangeCombo5();
+		}
+	}
+	else
+	{
+		MessageBox(TEXT("Please select a signal!"));
 	}
 }
