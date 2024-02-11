@@ -29,36 +29,17 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnCbnSelchangeCombo5();
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton3();
 private:
 	CListCtrl m_wake_up_setting_list;
-private:
 	CFont m_Title_Font;
-private:
 	CFont m_Table_Font;
-//public:
-//	afx_msg void OnBnClickedButton1();
-private:
-	//CComboBox cb_controller;
-	//CComboBox cb_trigger_controller;
-	//CComboBox cb_matter_devices;
-	//CComboBox cb_matter_action;
 	CComboBox cb_users;
-//public:
-//	afx_msg void OnCbnSelchangeCombo3();
-//	afx_msg void OnCbnSelchangeCombo1();
-private:
 	void GetRequestSignalsForDefaultUser();
-	//void GetRequestControllers();
-	//void GetRequestMatterDevices();
 	void GetRequestUsers();
 	void GetRequestSignalsForAUser(CString str);
-public:
-	afx_msg void OnCbnSelchangeCombo5();
-//private:
-//	CEdit edit_trigger_numbers;
-//public:
-//	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedButton1();
 };
 
 

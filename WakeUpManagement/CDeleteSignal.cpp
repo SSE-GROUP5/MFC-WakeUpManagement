@@ -69,8 +69,8 @@ void CDeleteSignal::OnBnClickedOk()
 				response_delete = cpr::Delete(cpr::Url{ "http://localhost:5001/signals/" + signal_id },
 									cpr::Header{ {"Content-Type", "application/json"} });
 				if (response_delete.status_code == 200) {
-						MessageBox(TEXT("Successly Delete!"));
-						CDialogEx::OnOK();
+					CDialogEx::OnOK();
+					MessageBox(TEXT("Successly Deleted!"));
 				}
 				else {
 					CString statusMessage;

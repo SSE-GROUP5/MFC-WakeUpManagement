@@ -19,6 +19,7 @@
 #define IDI_ICON_INFO                   327
 #define IDB_BITMAP1                     329
 #define IDB_BITMAP2                     334
+#define IDD_ADD_SIGNAL                  335
 #define IDC_LIST1                       1000
 #define IDC_LIST2                       1001
 #define IDC_BUTTON1                     1002
@@ -41,14 +42,22 @@
 #define IDC_TOOLTIP_TARGETS             1018
 #define IDC_TOOLTIP_GOSH_ID             1019
 #define IDC_SIGNAL_NUMBER               1020
+#define IDC_TEXT_USER_ID                1022
+#define IDC_TEXT_TRIGGER_ID             1023
+#define IDC_TOOLTIP_TRIGGER_NAME        1024
+#define IDC_TOOLTIP_TRIGGER_ACTION      1025
+#define IDC_TOOLTIP_TRIGGER_VALUE       1026
+#define IDC_TOOLTIP_TARGET_ID           1027
+#define IDC_TOOLTIP_TARGET_ID2          1028
+#define IDC_TOOLTIP_TARGET_ACTION       1028
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        335
+#define _APS_NEXT_RESOURCE_VALUE        337
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1021
+#define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif
