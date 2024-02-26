@@ -70,15 +70,17 @@ void CDeleteSignal::OnBnClickedOk()
 									cpr::Header{ {"Content-Type", "application/json"} });
 				if (response_delete.status_code == 200) {
 					CDialogEx::OnOK();
-					MessageBox(TEXT("Successly Deleted!"));
+					AfxMessageBox(_T("Successly deleted!"), MB_ICONINFORMATION | MB_OK);
 				}
 				else {
-					CString statusMessage;
-					statusMessage.Format(_T("Failed! HTTP Status Code: %d"), response_delete.status_code);
-					
-					// Display a message box with the status code
-					AfxMessageBox(statusMessage + "\n ");
-					TRACE(_T("%s\n"), response_delete.error.message);
+					auto json_error = nlohmann::json::parse(response_delete.text);
+					std::string error_message = json_error["message"];
+					CString m_error_message(error_message.c_str());
+
+					CString m_error_status_code;
+					m_error_status_code.Format(_T("%d Error: "), response_delete.status_code);
+
+					AfxMessageBox(m_error_status_code + m_error_message + "\n ");
 				}
 				break;
 			}

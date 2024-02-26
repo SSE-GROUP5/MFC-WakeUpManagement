@@ -50,12 +50,10 @@ void CAddTrigger::OnBnClickedOk()
 	CString edit_trigger_wake_up_server_url;
 	CString edit_trigger_zmq_url;
 
-
 	trigger_name.GetWindowTextW(edit_trigger_name);
 	trigger_type.GetWindowTextW(edit_trigger_type);
 	trigger_wake_up_server_url.GetWindowTextW(edit_trigger_wake_up_server_url);
 	trigger_zmq_url.GetWindowTextW(edit_trigger_zmq_url);
-
 
 	std::string str_edit_trigger_name = CT2A(edit_trigger_name);
 	std::string std_edit_trigger_type = CT2A(edit_trigger_type);
@@ -75,26 +73,28 @@ void CAddTrigger::OnBnClickedOk()
 				std::ofstream file("C:\\Users\\20736\\wakeup-system\\python_morse\\env_trigger.txt", std::ios::app);
 
 				if (file.is_open()) {
-					// File is open, you can write to it
 					file << "ID=" << trigger_id << "\n"
 						 << "WAKEUP_SERVER_URL=" << std_edit_trigger_wake_up_server_url << "\n"
 						 << "ZMQ_SERVER=" << std_edit_trigger_zmq_url << "\n";
 
-					// Remember to close the file when you're done
 					file.close();
 					CDialogEx::OnOK();
+					AfxMessageBox(_T("Successly added!"), MB_ICONINFORMATION | MB_OK);
 				}
 				else {
 					// Failed to open the file
-					MessageBox(TEXT("Failed!"));
+					AfxMessageBox(TEXT("Failed to Open env_trigger.txt!"));
 				}
-				MessageBox(TEXT("Successly added!"));
 			}
 			else {
 				auto json_error = nlohmann::json::parse(response.text);
 				std::string error_message = json_error["message"];
-				CString myCStringA(error_message.c_str());
-				AfxMessageBox(myCStringA);
+				CString m_error_message(error_message.c_str());
+
+				CString m_error_status_code;
+				m_error_status_code.Format(_T("%d Error: "), response.status_code);
+
+				AfxMessageBox(m_error_status_code + m_error_message + "\n ");
 			}
 	}
 	else {

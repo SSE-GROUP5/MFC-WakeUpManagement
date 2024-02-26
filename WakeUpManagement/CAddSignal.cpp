@@ -204,8 +204,8 @@ void CAddSignal::OnBnClickedOk()
 				target_action == CString(item["target_action"].get<std::string>().c_str()) &&
 				(user_id.IsEmpty() && item["user_id"].is_null() || user_id == CString(item["user_id"].get<std::string>().c_str())))
 			{
-				MessageBox(TEXT("You already have the setting!"));
 				postRequest = false;
+				AfxMessageBox(TEXT("You already have the setting!"));
 				break;
 			}
 		}
@@ -247,15 +247,17 @@ void CAddSignal::OnBnClickedOk()
 
 		if (response.status_code == 201) {
 			CDialogEx::OnOK();
-			MessageBox(TEXT("Successly added!"));
+			AfxMessageBox(_T("Successly added!"), MB_ICONINFORMATION | MB_OK);
 		}
 		else {
-			CString statusMessage;
-			statusMessage.Format(_T("Failed! Please Check Your Input! HTTP Status Code: %d"), response.status_code);
+			auto json_error = nlohmann::json::parse(response.text);
+			std::string error_message = json_error["message"];
+			CString m_error_message(error_message.c_str());
 
-			// Display a message box with the status code
-			AfxMessageBox(statusMessage);
+			CString m_error_status_code;
+			m_error_status_code.Format(_T("%d Error: "), response.status_code);
 
+			AfxMessageBox(m_error_status_code + m_error_message + "\n ");
 		}
 	}
 }
