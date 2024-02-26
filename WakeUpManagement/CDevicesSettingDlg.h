@@ -30,16 +30,17 @@ protected:
 public:
 	virtual void OnInitialUpdate();
 private:
-	CListCtrl m_controllers;
+	CListCtrl m_triggers;
 	CListCtrl m_matter_devices;
 private:
 	CFont m_Table_Font;
 private:
-	void GetRequestControllers();
+	void GetRequestTriggers();
 	void GetRequestMatterDevices();
 	CToolTipCtrl m_ToolTip;
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedButton1();
 };
 
 

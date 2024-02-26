@@ -25,6 +25,7 @@
 #define IDD_ADD_SIGNAL                  335
 #define IDD_DIALOG2                     337
 #define IDD_EDIT_SIGNAL                 337
+#define IDD_ADD_TRIGGER                 342
 #define IDC_LIST1                       1000
 #define IDC_LIST2                       1001
 #define IDC_BUTTON1                     1002
@@ -42,6 +43,7 @@
 #define IDC_EDIT2                       1011
 #define IDC_EDIT3                       1012
 #define IDC_COMBO5                      1013
+#define IDC_EDIT4                       1013
 #define IDC_TEXT                        1015
 #define IDC_TOOLTIP                     1016
 #define IDC_ICON_TOOLTIP                1016
@@ -68,7 +70,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        342
+#define _APS_NEXT_RESOURCE_VALUE        344
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           321

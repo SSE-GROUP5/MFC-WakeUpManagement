@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "WakeUpManagement.h"
 #include "CDevicesSettingDlg.h"
+#include "CAddTrigger.h"
 #include <cpr/cpr.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -28,11 +29,12 @@ CDevicesSettingDlg::~CDevicesSettingDlg()
 void CDevicesSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, m_controllers);
+	DDX_Control(pDX, IDC_LIST1, m_triggers);
 	DDX_Control(pDX, IDC_LIST2, m_matter_devices);
 }
 
 BEGIN_MESSAGE_MAP(CDevicesSettingDlg, CFormView)
+	ON_BN_CLICKED(IDC_BUTTON1, &CDevicesSettingDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -61,15 +63,15 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
-	m_controllers.SetFont(&m_Table_Font);
+	m_triggers.SetFont(&m_Table_Font);
 	m_matter_devices.SetFont(&m_Table_Font);
 
-	m_controllers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
-	m_controllers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
-	m_controllers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
-	//m_controllers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
-	m_controllers.SetExtendedStyle(m_controllers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	GetRequestControllers();
+	m_triggers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
+	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
+	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
+	//m_triggers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	GetRequestTriggers();
 
 	m_matter_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
 	m_matter_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
@@ -96,25 +98,27 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	}
 }
 
-void CDevicesSettingDlg::GetRequestControllers()
+void CDevicesSettingDlg::GetRequestTriggers()
 {
-	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
-	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
+	m_triggers.DeleteAllItems();
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
-	for (const auto& item : jsonList_controllers) {
+	for (const auto& item : jsonList_triggers) {
 		CString id = CString(item["id"].get<std::string>().c_str());
 		CString name = CString(item["name"].get<std::string>().c_str());
 		CString type = CString(item["type"].get<std::string>().c_str());
 
 		// Add the data to the list control
-		int index = m_controllers.InsertItem(m_controllers.GetItemCount(), id);
-		m_controllers.SetItemText(index, 1, name);
-		m_controllers.SetItemText(index, 2, type);
+		int index = m_triggers.InsertItem(m_triggers.GetItemCount(), id);
+		m_triggers.SetItemText(index, 1, name);
+		m_triggers.SetItemText(index, 2, type);
 	}
 }
 
 void CDevicesSettingDlg::GetRequestMatterDevices()
 {
+	m_matter_devices.DeleteAllItems();
 	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
 	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
 
@@ -139,4 +143,15 @@ BOOL CDevicesSettingDlg::PreTranslateMessage(MSG* pMsg)
 	m_ToolTip.RelayEvent(pMsg);
 
 	return CFormView::PreTranslateMessage(pMsg);
+}
+
+
+void CDevicesSettingDlg::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	CAddTrigger dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		GetRequestTriggers();
+	}
 }

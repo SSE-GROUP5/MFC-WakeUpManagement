@@ -126,10 +126,10 @@ void CAddSignal::OnCbnSelchangeCombo1()
 	GetDlgItem(IDC_TEXT_TRIGGER_ID)->GetWindowTextW(trigger_id);
 	std::string trigger_id_str = CT2A(trigger_id);
 	
-	cpr::Response r_controllers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
-	nlohmann::json jsonList_controllers = nlohmann::json::parse(r_controllers.text);
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 	
-	for (const auto& item : jsonList_controllers) {
+	for (const auto& item : jsonList_triggers) {
 		if (item["id"] == trigger_id_str) {
 			CString type = CString(item["type"].get<std::string>().c_str());
 			cb_trigger_action.AddString(type);
