@@ -148,10 +148,10 @@ void CAddSignal::OnCbnSelchangeCombo3()
 	CString str;
 	cb_target_id.GetLBText(index, str);
 	
-	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
-	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
+	cpr::Response r_target_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	nlohmann::json jsonList_target_devices = nlohmann::json::parse(r_target_devices.text);
 	
-	for (const auto& item : jsonList_matter_devices) {
+	for (const auto& item : jsonList_target_devices) {
 		// Check if the "matter_id" matches
 		if (item["matter_id"] == CT2A(str)) {
 			const auto& possibleActionArray = item["possible_actions"];

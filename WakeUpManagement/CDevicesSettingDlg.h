@@ -31,12 +31,12 @@ public:
 	virtual void OnInitialUpdate();
 private:
 	CListCtrl m_triggers;
-	CListCtrl m_matter_devices;
+	CListCtrl m_target_devices;
 private:
 	CFont m_Table_Font;
 private:
 	void GetRequestTriggers();
-	void GetRequestMatterDevices();
+	void GetRequestTargetDevices();
 	CToolTipCtrl m_ToolTip;
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

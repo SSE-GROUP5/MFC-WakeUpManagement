@@ -96,7 +96,7 @@ BOOL CDeleteSignal::OnInitDialog()
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	GetDlgItem(IDC_TEXT)->ModifyStyle(0, SS_CENTER);
 	GetDlgItem(IDC_TEXT)->SetWindowText(TEXT("Trigger Name: ") + trigger_name +
-										"\n\nController Name: " + trigger_action +
+										"\n\nTrigger Action: " + trigger_action +
 										"\n\nTrigger Value: " + trigger_value +
 										"\n\nTarget ID: " + target_id +
 										"\n\nTarget Action: " + target_action);

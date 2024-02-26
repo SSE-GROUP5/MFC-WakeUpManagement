@@ -30,7 +30,7 @@ void CDevicesSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_triggers);
-	DDX_Control(pDX, IDC_LIST2, m_matter_devices);
+	DDX_Control(pDX, IDC_LIST2, m_target_devices);
 }
 
 BEGIN_MESSAGE_MAP(CDevicesSettingDlg, CFormView)
@@ -64,7 +64,7 @@ void CDevicesSettingDlg::OnInitialUpdate()
 
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
 	m_triggers.SetFont(&m_Table_Font);
-	m_matter_devices.SetFont(&m_Table_Font);
+	m_target_devices.SetFont(&m_Table_Font);
 
 	m_triggers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
 	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
@@ -73,11 +73,11 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	GetRequestTriggers();
 
-	m_matter_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
-	m_matter_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
-	m_matter_devices.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
-	m_matter_devices.SetExtendedStyle(m_matter_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	GetRequestMatterDevices();
+	m_target_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
+	m_target_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
+	m_target_devices.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
+	m_target_devices.SetExtendedStyle(m_target_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	GetRequestTargetDevices();
 
 
 	//Create the ToolTip control
@@ -116,21 +116,21 @@ void CDevicesSettingDlg::GetRequestTriggers()
 	}
 }
 
-void CDevicesSettingDlg::GetRequestMatterDevices()
+void CDevicesSettingDlg::GetRequestTargetDevices()
 {
-	m_matter_devices.DeleteAllItems();
-	cpr::Response r_matter_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
-	nlohmann::json jsonList_matter_devices = nlohmann::json::parse(r_matter_devices.text);
+	m_target_devices.DeleteAllItems();
+	cpr::Response r_target_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	nlohmann::json jsonList_target_devices = nlohmann::json::parse(r_target_devices.text);
 
-	for (const auto& item : jsonList_matter_devices) {
+	for (const auto& item : jsonList_target_devices) {
 		CString id = CString(item["matter_id"].get<std::string>().c_str());
 		CString name = CString(item["name"].get<std::string>().c_str());
 		CString type = CString(item["type"].get<std::string>().c_str());
 
 		// Add the data to the list control
-		int index = m_matter_devices.InsertItem(m_matter_devices.GetItemCount(), id);
-		m_matter_devices.SetItemText(index, 1, name);
-		m_matter_devices.SetItemText(index, 2, type);
+		int index = m_target_devices.InsertItem(m_target_devices.GetItemCount(), id);
+		m_target_devices.SetItemText(index, 1, name);
+		m_target_devices.SetItemText(index, 2, type);
 	}
 }
 
