@@ -243,7 +243,7 @@ void CAddSignal::OnBnClickedOk()
 			CString m_error_status_code;
 			m_error_status_code.Format(_T("%d Error: "), response.status_code);
 
-			AfxMessageBox(m_error_status_code + m_error_message + "\n ");
+			AfxMessageBox(m_error_status_code + m_error_message + "\n ", MB_ICONERROR | MB_OK);
 		}
 	}
 }

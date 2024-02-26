@@ -146,14 +146,17 @@ void CPatientRecordDlg::OnBnClickedButton1()
 
 		if (response.status_code == 200) {
 			getRequestPatient();
-			MessageBox(TEXT("Successly added!"));
+			AfxMessageBox(_T("Successly added!"), MB_ICONINFORMATION | MB_OK);
 		}
 		else {
-			CString statusMessage;
-			statusMessage.Format(_T("Failed! Please Check Your Input! HTTP Status Code: %d"), response.status_code);
+			//auto json_error = nlohmann::json::parse(response.text);
+			std::string error_message = response.text;
+			CString m_error_message(error_message.c_str());
 
-			// Display a message box with the status code
-			AfxMessageBox(statusMessage);
+			CString m_error_status_code;
+			m_error_status_code.Format(_T("%d Error: "), response.status_code);
+
+			AfxMessageBox(m_error_status_code + m_error_message + "\n " + "Please check your input!", MB_ICONERROR | MB_OK);
 		}
 	}
 }

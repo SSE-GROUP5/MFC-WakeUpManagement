@@ -83,7 +83,7 @@ void CAddTrigger::OnBnClickedOk()
 				}
 				else {
 					// Failed to open the file
-					AfxMessageBox(TEXT("Failed to Open env_trigger.txt!"));
+					AfxMessageBox(TEXT("Failed to Open env_trigger.txt!"), MB_ICONERROR | MB_OK);
 				}
 			}
 			else {
@@ -94,7 +94,7 @@ void CAddTrigger::OnBnClickedOk()
 				CString m_error_status_code;
 				m_error_status_code.Format(_T("%d Error: "), response.status_code);
 
-				AfxMessageBox(m_error_status_code + m_error_message + "\n ");
+				AfxMessageBox(m_error_status_code + m_error_message + "\n ", MB_ICONERROR | MB_OK);
 			}
 	}
 	else {
