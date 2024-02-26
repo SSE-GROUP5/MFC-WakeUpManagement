@@ -25,9 +25,10 @@ public:
 	afx_msg void OnBnClickedOk();
 private:
 	CEdit trigger_name;
-	CEdit trigger_type;
 	CEdit trigger_wake_up_server_url;
 	CEdit trigger_zmq_url;
+	CComboBox trigger_type;
 public:
 	virtual BOOL OnInitDialog();
+private:
 };

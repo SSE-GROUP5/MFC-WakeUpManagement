@@ -28,9 +28,9 @@ void CAddTrigger::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT2, trigger_name);
-	DDX_Control(pDX, IDC_EDIT3, trigger_type);
 	DDX_Control(pDX, IDC_EDIT1, trigger_wake_up_server_url);
 	DDX_Control(pDX, IDC_EDIT4, trigger_zmq_url);
+	DDX_Control(pDX, IDC_COMBO1, trigger_type);
 }
 
 
@@ -113,6 +113,8 @@ BOOL CAddTrigger::OnInitDialog()
 	// TODO:  Add extra initialization here
 	trigger_wake_up_server_url.SetWindowText(_T("http://localhost:5001"));
 	trigger_zmq_url.SetWindowText(_T("tcp://127.0.0.1:5556"));
+	trigger_type.AddString(_T("Vision"));
+	trigger_type.AddString(_T("Sound"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
