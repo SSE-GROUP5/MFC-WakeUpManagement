@@ -54,7 +54,6 @@ void CAddSignal::GetRequestForTriggersCombo()
 	for (const auto& item : jsonList_triggers) {
 		CString name = CString(item["name"].get<std::string>().c_str());
 		CString id = CString(item["id"].get<std::string>().c_str());
-		GetDlgItem(IDC_TEXT_TRIGGER_ID)->SetWindowTextW(id);
 		cb_trigger_name.AddString(name);
 	}
 }
@@ -78,6 +77,10 @@ BOOL CAddSignal::OnInitDialog()
 	m_Title_Font.CreatePointFont(120, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	GetDlgItem(IDC_TEXT_USER_ID)->SetWindowTextW(user_id);
+	cb_trigger_action.AddString(TEXT("Blinking Eyes"));
+	cb_trigger_action.AddString(TEXT("Morse"));
+	cb_trigger_action.AddString(TEXT("Knock"));
+	cb_trigger_action.SetCurSel(0);
 	GetRequestForTriggersCombo();
 	GetRequestForTargetsCombo();
 
@@ -119,23 +122,10 @@ BOOL CAddSignal::OnInitDialog()
 
 void CAddSignal::OnCbnSelchangeCombo1()
 {
-	GetDlgItem(IDC_COMBO2)->SendMessage(CB_RESETCONTENT);
-	int index = cb_trigger_name.GetCurSel();
-
-	CString trigger_id;
-	GetDlgItem(IDC_TEXT_TRIGGER_ID)->GetWindowTextW(trigger_id);
-	std::string trigger_id_str = CT2A(trigger_id);
-	
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
-	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
-	
-	for (const auto& item : jsonList_triggers) {
-		if (item["id"] == trigger_id_str) {
-			CString type = CString(item["type"].get<std::string>().c_str());
-			cb_trigger_action.AddString(type);
-		}
-	}
-	cb_trigger_action.SetCurSel(0);
+	//cb_trigger_action.AddString(TEXT("Blinking Eyes"));
+	//cb_trigger_action.AddString(TEXT("Morse"));
+	//cb_trigger_action.AddString(TEXT("Knock"));
+	//cb_trigger_action.SetCurSel(0);
 }
 
 
@@ -179,7 +169,6 @@ void CAddSignal::OnBnClickedOk()
 	CString target_id;
 	CString target_action;
 	CString user_id;
-	GetDlgItem(IDC_TEXT_TRIGGER_ID)->GetWindowTextW(trigger_id);
 	cb_trigger_name.GetWindowTextW(trigger_name);
 	cb_trigger_action.GetWindowTextW(trigger_action);
 	editBox_trigger_value.GetWindowTextW(trigger_num_actions);
@@ -212,7 +201,6 @@ void CAddSignal::OnBnClickedOk()
 	}
 
 	if (postRequest) {
-		std::string str_trigger_id = CT2A(trigger_id);
 		std::string std_trigger_name = CT2A(trigger_name);
 		std::string std_trigger_action = CT2A(trigger_action);
 		std::string std_trigger_num_actions = CT2A(trigger_num_actions);
@@ -225,8 +213,7 @@ void CAddSignal::OnBnClickedOk()
 		{
 			response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
 				cpr::Header{ {"Content-Type", "application/json"} },
-				cpr::Body{ "{ \"trigger_id\": \"" + str_trigger_id +
-						   "\", \"trigger_name\": \"" + std_trigger_name +
+				cpr::Body{ "{ \"trigger_name\": \"" + std_trigger_name +
 						   "\", \"trigger_action\": \"" + std_trigger_action +
 						   "\", \"trigger_num_actions\": \"" + std_trigger_num_actions +
 						   "\", \"target_device_id\": \"" + std_target_id +
@@ -237,8 +224,7 @@ void CAddSignal::OnBnClickedOk()
 		{
 			response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
 				cpr::Header{ {"Content-Type", "application/json"} },
-				cpr::Body{ "{ \"trigger_id\": \"" + str_trigger_id +
-						   "\", \"trigger_name\": \"" + std_trigger_name +
+				cpr::Body{ "{ \"trigger_name\": \"" + std_trigger_name +
 						   "\", \"trigger_action\": \"" + std_trigger_action +
 						   "\", \"trigger_num_actions\": \"" + std_trigger_num_actions +
 						   "\", \"target_device_id\": \"" + std_target_id +
