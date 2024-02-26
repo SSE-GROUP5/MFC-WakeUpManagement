@@ -77,10 +77,6 @@ BOOL CAddSignal::OnInitDialog()
 	m_Title_Font.CreatePointFont(120, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	GetDlgItem(IDC_TEXT_USER_ID)->SetWindowTextW(user_id);
-	cb_trigger_action.AddString(TEXT("Blinking Eyes"));
-	cb_trigger_action.AddString(TEXT("Morse"));
-	cb_trigger_action.AddString(TEXT("Knock"));
-	cb_trigger_action.SetCurSel(0);
 	GetRequestForTriggersCombo();
 	GetRequestForTargetsCombo();
 
@@ -122,7 +118,29 @@ BOOL CAddSignal::OnInitDialog()
 
 void CAddSignal::OnCbnSelchangeCombo1()
 {
-	//GetDlgItem(IDC_COMBO4)->SendMessage(CB_RESETCONTENT);
+	GetDlgItem(IDC_COMBO2)->SendMessage(CB_RESETCONTENT);
+	int index = cb_trigger_name.GetCurSel();
+	CString str;
+	cb_trigger_name.GetLBText(index, str);
+
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
+
+	for (const auto& item : jsonList_triggers) {
+		// Check if the "matter_id" matches
+		if (item["name"] == CT2A(str)) {
+			if (item["type"] == "Sound") {
+				cb_trigger_action.AddString(_T("Tap"));
+				cb_trigger_action.AddString(_T("Morse"));
+			}
+			else if (item["type"] == "Vision") {
+				cb_trigger_action.AddString(_T("Blink Eyes"));
+				cb_trigger_action.AddString(_T("Fall Detection"));
+			}
+			break;
+		}
+	}
+	cb_trigger_action.SetCurSel(0);
 }
 
 
@@ -150,6 +168,7 @@ void CAddSignal::OnCbnSelchangeCombo3()
 				// Add the data to the combo
 				cb_target_action.AddString(action);
 			}
+			break;
 		}
 	}
 	cb_target_action.SetCurSel(0);
@@ -192,7 +211,7 @@ void CAddSignal::OnBnClickedOk()
 				trigger_num_actions == get_trigger_value &&
 				target_id == CString(item["target_id"].get<std::string>().c_str()) &&
 				target_action == CString(item["target_action"].get<std::string>().c_str()) &&
-				(user_id.IsEmpty() && item["user_id"].is_null() || user_id == CString(item["user_id"].get<std::string>().c_str())))
+				((user_id.IsEmpty() && item["user_id"].is_null()) || (!item["user_id"].is_null() && user_id == CString(item["user_id"].get<std::string>().c_str()))))
 			{
 				postRequest = false;
 				AfxMessageBox(TEXT("You already have the setting!"));

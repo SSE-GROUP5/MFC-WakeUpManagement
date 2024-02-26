@@ -35,6 +35,8 @@ void CEditSignal::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CEditSignal, CDialogEx)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CEditSignal::OnCbnSelchangeCombo1)
+	ON_CBN_SELCHANGE(IDC_COMBO3, &CEditSignal::OnCbnSelchangeCombo3)
 END_MESSAGE_MAP()
 
 
@@ -63,10 +65,16 @@ BOOL CEditSignal::OnInitDialog()
 	if (trigger_name_index != CB_ERR) {
 		cb_trigger_name.SetCurSel(trigger_name_index);
 	}
+	else {
+		cb_trigger_name.SetCurSel(0);
+	}
 
 	int target_id_index = cb_target_id.FindString(-1, target_id);
 	if (target_id_index != CB_ERR) {
 		cb_target_id.SetCurSel(target_id_index);
+	}
+	else {
+		cb_target_id.SetCurSel(0);
 	}
 
 	editBox_trigger_value.SetWindowTextW(trigger_value);
@@ -113,8 +121,6 @@ void CEditSignal::GetRequestForTriggersCombo()
 
 	for (const auto& item : jsonList_triggers) {
 		CString name = CString(item["name"].get<std::string>().c_str());
-		CString id = CString(item["id"].get<std::string>().c_str());
-		GetDlgItem(IDC_TEXT_TRIGGER_ID)->SetWindowTextW(id);
 		cb_trigger_name.AddString(name);
 	}
 }
@@ -130,29 +136,37 @@ void CEditSignal::GetRequestForTargetsCombo()
 	}
 }
 
-
 void CEditSignal::OnCbnSelchangeCombo1()
 {
 	GetDlgItem(IDC_COMBO2)->SendMessage(CB_RESETCONTENT);
 	int index = cb_trigger_name.GetCurSel();
-
-	CString trigger_id;
-	GetDlgItem(IDC_TEXT_TRIGGER_ID)->GetWindowTextW(trigger_id);
-	std::string trigger_id_str = CT2A(trigger_id);
+	CString str;
+	cb_trigger_name.GetLBText(index, str);
 
 	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
 	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
 	for (const auto& item : jsonList_triggers) {
-		if (item["id"] == trigger_id_str) {
-			CString type = CString(item["type"].get<std::string>().c_str());
-			cb_trigger_action.AddString(type);
+		// Check if the "matter_id" matches
+		if (item["name"] == CT2A(str)) {
+			if (item["type"] == "Sound") {
+				cb_trigger_action.AddString(_T("Tap"));
+				cb_trigger_action.AddString(_T("Morse"));
+			}
+			else if (item["type"] == "Vision") {
+				cb_trigger_action.AddString(_T("Blink Eyes"));
+				cb_trigger_action.AddString(_T("Fall Detection"));
+			}
+			break;
 		}
 	}
 
 	int trigger_action_index = cb_trigger_action.FindString(-1, trigger_action);
 	if (trigger_action_index != CB_ERR) {
 		cb_trigger_action.SetCurSel(trigger_action_index);
+	}
+	else {
+		cb_trigger_action.SetCurSel(0);
 	}
 }
 
@@ -187,5 +201,8 @@ void CEditSignal::OnCbnSelchangeCombo3()
 	int target_action_index = cb_target_action.FindString(-1, target_action);
 	if (target_action_index != CB_ERR) {
 		cb_target_action.SetCurSel(target_action_index);
+	}
+	else {
+		cb_target_action.SetCurSel(0);
 	}
 }
