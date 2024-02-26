@@ -98,11 +98,8 @@ void CAddTrigger::OnBnClickedOk()
 			}
 	}
 	else {
-		MessageBox(TEXT("Input cannot be null!"));
+		AfxMessageBox(TEXT("Input cannot be empty!"), MB_ICONERROR | MB_OK);
 	}
-
-	
-
 }
 
 

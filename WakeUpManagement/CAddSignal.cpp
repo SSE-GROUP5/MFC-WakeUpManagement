@@ -122,10 +122,7 @@ BOOL CAddSignal::OnInitDialog()
 
 void CAddSignal::OnCbnSelchangeCombo1()
 {
-	//cb_trigger_action.AddString(TEXT("Blinking Eyes"));
-	//cb_trigger_action.AddString(TEXT("Morse"));
-	//cb_trigger_action.AddString(TEXT("Knock"));
-	//cb_trigger_action.SetCurSel(0);
+	//GetDlgItem(IDC_COMBO4)->SendMessage(CB_RESETCONTENT);
 }
 
 
@@ -134,7 +131,6 @@ void CAddSignal::OnCbnSelchangeCombo3()
 	// TODO: Add your control notification handler code here
 	GetDlgItem(IDC_COMBO4)->SendMessage(CB_RESETCONTENT);
 	int index = cb_target_id.GetCurSel();
-	
 	CString str;
 	cb_target_id.GetLBText(index, str);
 	
@@ -162,7 +158,6 @@ void CAddSignal::OnCbnSelchangeCombo3()
 
 void CAddSignal::OnBnClickedOk()
 {
-	CString trigger_id;
 	CString trigger_name;
 	CString trigger_action;
 	CString trigger_num_actions;
@@ -175,8 +170,14 @@ void CAddSignal::OnBnClickedOk()
 	cb_target_id.GetWindowTextW(target_id);
 	cb_target_action.GetWindowTextW(target_action);
 	GetDlgItem(IDC_TEXT_USER_ID)->GetWindowTextW(user_id);
-
 	boolean postRequest = true;
+
+	if (trigger_name.IsEmpty() || trigger_action.IsEmpty() || trigger_num_actions.IsEmpty() ||
+		target_id.IsEmpty() || target_action.IsEmpty()) {
+		postRequest = false;
+		AfxMessageBox(TEXT("Input cannot be empty!"));
+	}
+
 	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 	cpr::Response response_delete;
