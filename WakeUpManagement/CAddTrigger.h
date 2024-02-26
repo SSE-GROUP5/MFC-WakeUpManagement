@@ -28,4 +28,6 @@ private:
 	CEdit trigger_type;
 	CEdit trigger_wake_up_server_url;
 	CEdit trigger_zmq_url;
+public:
+	virtual BOOL OnInitDialog();
 };

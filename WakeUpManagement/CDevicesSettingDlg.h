@@ -29,18 +29,15 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedButton1();
 private:
 	CListCtrl m_triggers;
 	CListCtrl m_target_devices;
-private:
 	CFont m_Table_Font;
-private:
 	void GetRequestTriggers();
 	void GetRequestTargetDevices();
 	CToolTipCtrl m_ToolTip;
-public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnBnClickedButton1();
 };
 
 
