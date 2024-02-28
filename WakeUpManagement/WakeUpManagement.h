@@ -18,6 +18,8 @@ class CWakeUpManagementApp : public CWinApp
 {
 public:
 	CWakeUpManagementApp() noexcept;
+	void CreateAppFolder();
+	void RunElevated();
 
 
 // Overrides

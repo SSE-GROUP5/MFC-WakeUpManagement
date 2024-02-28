@@ -79,6 +79,13 @@ BOOL CWakeUpManagementApp::InitInstance()
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
 	}
+	if (!IsUserAnAdmin())
+	{
+		// If not running with administrative privileges, relaunch the application with elevated privileges
+		RunElevated();
+		return FALSE;
+	}
+	CreateAppFolder();
 
 	AfxEnableControlContainer();
 
@@ -126,6 +133,45 @@ BOOL CWakeUpManagementApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	return TRUE;
+}
+
+void CWakeUpManagementApp::CreateAppFolder()
+{
+	CString folderPath = _T("C:\\Program Files\\wakeup_triggers");
+
+	// Create the directory if it does not exist
+	if (!CreateDirectory(folderPath, NULL) && GetLastError() != ERROR_ALREADY_EXISTS)
+	{
+		// Handle the error (e.g., show a message box)
+		AfxMessageBox(_T("Error creating application folder."), MB_OK | MB_ICONERROR);
+	}
+}
+
+void CWakeUpManagementApp::RunElevated()
+{
+	// Get the full path to the executable
+	CString exePath;
+	GetModuleFileName(NULL, exePath.GetBufferSetLength(MAX_PATH), MAX_PATH);
+	exePath.ReleaseBuffer();
+
+	// Build the command line for relaunching with elevated privileges
+	CString commandLine;
+	commandLine.Format(_T("\"%s\""), exePath);
+
+	// Run the application with elevated privileges
+	SHELLEXECUTEINFO sei = { sizeof(sei) };
+	sei.lpVerb = _T("runas");
+	sei.lpFile = exePath;
+	sei.lpParameters = commandLine;
+	sei.nShow = SW_NORMAL;
+
+	if (!ShellExecuteEx(&sei))
+	{
+		AfxMessageBox(_T("Error launching application with elevated privileges."), MB_OK | MB_ICONERROR);
+	}
+
+	// Terminate the current instance
+	ExitProcess(0);
 }
 
 int CWakeUpManagementApp::ExitInstance()
