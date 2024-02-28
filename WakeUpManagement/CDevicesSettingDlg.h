@@ -38,6 +38,8 @@ private:
 	void GetRequestTriggers();
 	void GetRequestTargetDevices();
 	CToolTipCtrl m_ToolTip;
+public:
+	afx_msg void OnBnClickedButton4();
 };
 
 

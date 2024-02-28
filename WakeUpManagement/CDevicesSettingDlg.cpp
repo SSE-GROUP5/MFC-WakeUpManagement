@@ -35,6 +35,7 @@ void CDevicesSettingDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDevicesSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDevicesSettingDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON4, &CDevicesSettingDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -154,4 +155,28 @@ void CDevicesSettingDlg::OnBnClickedButton1()
 	{
 		GetRequestTriggers();
 	}
+}
+
+
+void CDevicesSettingDlg::OnBnClickedButton4()
+{
+	// TODO: Add your control notification handler code here
+	std::string Path = "C:\\Program Files\\wakeup_triggers";
+
+	// Check if the folder exists
+	if (!fs::exists(Path)) {
+		// Create the folder if it doesn't exist
+		if (!fs::create_directories(Path)) {
+			std::cerr << "Error creating folder: " << Path << std::endl;
+			/*return 1;*/ // Exit with an error code
+		}
+	}
+
+	// Construct the file path
+	CStringA cstringA(Path.c_str());
+	CString cstring(cstringA);
+
+
+	// Open the system file explorer at the specified folder
+	ShellExecute(NULL, _T("explore"), cstring, NULL, NULL, SW_SHOWNORMAL);
 }
