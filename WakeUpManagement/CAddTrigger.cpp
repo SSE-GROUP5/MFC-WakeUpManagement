@@ -69,8 +69,20 @@ void CAddTrigger::OnBnClickedOk()
 			if (response.status_code == 201) {
 				auto json_response = nlohmann::json::parse(response.text);
 				std::string trigger_id = json_response["id"];
+				std::string folderPath = "C:\\Program Files\\wakeup_triggers\\" + std_edit_trigger_type;
 
-				std::ofstream file("C:\\Users\\20736\\wakeup-system\\python_morse\\env_trigger.txt", std::ios::app);
+				// Check if the folder exists
+				if (!fs::exists(folderPath)) {
+					// Create the folder if it doesn't exist
+					if (!fs::create_directories(folderPath)) {
+						std::cerr << "Error creating folder: " << folderPath << std::endl;
+						/*return 1;*/ // Exit with an error code
+					}
+				}
+
+				// Construct the file path
+				std::string filePath = folderPath + "\\env_trigger.txt";
+				std::ofstream file(filePath, std::ios::trunc);
 
 				if (file.is_open()) {
 					file << "ID=" << trigger_id << "\n"
@@ -112,6 +124,7 @@ BOOL CAddTrigger::OnInitDialog()
 	trigger_zmq_url.SetWindowText(_T("tcp://127.0.0.1:5556"));
 	trigger_type.AddString(_T("Vision"));
 	trigger_type.AddString(_T("Sound"));
+	trigger_type.AddString(_T("blink_detect"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
