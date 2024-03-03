@@ -63,6 +63,7 @@
 #define IDC_TOOLTIP_TRIGGER_ACTION      1025
 #define IDC_TOOLTIP_EXPORT_TRIGGERS     1025
 #define IDC_TOOLTIP_TRIGGER_VALUE       1026
+#define IDC_WAKE_UP_SERVER              1026
 #define IDC_TOOLTIP_TARGET_ID           1027
 #define IDC_TOOLTIP_TARGET_ACTION       1028
 
@@ -72,7 +73,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        344
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           321
 #endif
 #endif

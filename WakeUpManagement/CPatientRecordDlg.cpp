@@ -75,8 +75,6 @@ void CPatientRecordDlg::OnInitialUpdate()
 	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_CENTER, 210);
 	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	getRequestPatient();
-
 	//Create the ToolTip control
 	if (!m_ToolTip.Create(this))
 	{
@@ -90,7 +88,43 @@ void CPatientRecordDlg::OnInitialUpdate()
 		m_ToolTip.AddTool(tooltip_gosh_id, _T("Gosh ID should start with XXXXX"));
 		m_ToolTip.Activate(TRUE);
 	}
+
+	std::thread(&CPatientRecordDlg::checkWakeUpServerMode, this).detach();
+
 }
+
+void CPatientRecordDlg::checkWakeUpServerMode()
+{
+	if (getWakeUpServerMode()) {
+		// Update the control after the HTTP response is checked
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
+		getRequestPatient();
+	}
+	else {
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: OFF"));
+	}
+}
+
+BOOL CPatientRecordDlg::getWakeUpServerMode()
+{
+	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001" });
+	return (r.status_code == 200);
+}
+
+
+//BOOL CPatientRecordDlg::getWakeUpServerMode()
+//{
+//	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001" });
+//	if (r.status_code == 200) {
+//		GetDlgItem(IDC_WAKE_UP_SERVER)->SetWindowTextW(TEXT("Wake Up Server: ON"));
+//		return true;
+//	}
+//	else {
+//		GetDlgItem(IDC_WAKE_UP_SERVER)->SetWindowTextW(TEXT("Wake Up Server: OFF"));
+//	}
+//
+//	return false;
+//}
 
 void CPatientRecordDlg::getRequestPatient()
 {

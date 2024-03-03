@@ -27,26 +27,21 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
-private:
-	CListCtrl m_patient_record;
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedButton1();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 private:
 	CFont m_Title_Font;
-private:
 	CFont m_Table_Font;
 	CEdit first_name;
-private:
 	CEdit last_name;
-private:
 	CEdit gosh_id;
-public:
-	afx_msg void OnBnClickedButton1();
-private:
+	CListCtrl m_patient_record;
 	void getRequestPatient();
 	CToolTipCtrl m_ToolTip;
-public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	BOOL getWakeUpServerMode();
+	void checkWakeUpServerMode();
 };
 
 
