@@ -84,9 +84,11 @@ void CSettings::OnBnClickedButton1()
 	global_wake_up_server_url = str;
 	AfxGetApp()->WriteProfileString(_T("Settings"), _T("GlobalVariable"), global_wake_up_server_url);
 	if (getWakeUpServerMode()) {
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Successfully Reach!"));
 		AfxMessageBox(_T("Successly saved!"), MB_ICONINFORMATION | MB_OK);
 	}
 	else {
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Failed to Reach!"));
 		AfxMessageBox(TEXT("Failed to Reach Wake Up Server URL!"));
 	}
 }
