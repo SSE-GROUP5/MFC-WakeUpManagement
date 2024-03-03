@@ -29,8 +29,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedButton1();
 private:
 	CFont m_Title_Font;
+	CEdit wake_up_server_url;
+	virtual void PostNcDestroy();
 };
 
 

@@ -20,6 +20,8 @@
 #define new DEBUG_NEW
 #endif
 
+CString global_wake_up_server_url;
+
 // CMainFrame
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
@@ -203,3 +205,4 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
+

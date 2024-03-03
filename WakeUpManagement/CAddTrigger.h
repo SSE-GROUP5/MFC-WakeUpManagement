@@ -30,5 +30,4 @@ private:
 	CComboBox trigger_type;
 public:
 	virtual BOOL OnInitDialog();
-private:
 };

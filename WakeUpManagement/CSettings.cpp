@@ -5,6 +5,7 @@
 #include "WakeUpManagement.h"
 #include "CSettings.h"
 
+extern CString global_wake_up_server_url;
 
 // CSettings
 
@@ -23,9 +24,11 @@ CSettings::~CSettings()
 void CSettings::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT1, wake_up_server_url);
 }
 
 BEGIN_MESSAGE_MAP(CSettings, CFormView)
+	ON_BN_CLICKED(IDC_BUTTON1, &CSettings::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -52,7 +55,32 @@ void CSettings::Dump(CDumpContext& dc) const
 void CSettings::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
+	global_wake_up_server_url = AfxGetApp()->GetProfileString(_T("Settings"), _T("GlobalVariable"), _T("http://localhost:5001/"));
 	m_Title_Font.CreatePointFont(200, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
+	wake_up_server_url.SetWindowTextW(global_wake_up_server_url);
+}
+
+
+
+void CSettings::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	CString str;
+	wake_up_server_url.GetWindowTextW(str);
+	if (str.IsEmpty()) {
+		AfxMessageBox(TEXT("Wake Up Server URL cannot be empty!"));
+	}
+	else {
+		global_wake_up_server_url = str;
+		AfxMessageBox(_T("Successly saved!"), MB_ICONINFORMATION | MB_OK);
+	}
+}
+
+void CSettings::PostNcDestroy()
+{
+	// TODO: Add your specialized code here and/or call the base class
+	AfxGetApp()->WriteProfileString(_T("Settings"), _T("GlobalVariable"), global_wake_up_server_url);
+	CFormView::PostNcDestroy();
 }
