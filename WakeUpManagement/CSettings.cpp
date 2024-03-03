@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "WakeUpManagement.h"
 #include "CSettings.h"
+#include <thread>
 
 extern CString global_wake_up_server_url;
 extern BOOL getWakeUpServerMode();
@@ -60,8 +61,19 @@ void CSettings::OnInitialUpdate()
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
 	wake_up_server_url.SetWindowTextW(global_wake_up_server_url);
+	std::thread(&CSettings::checkWakeUpServerMode, this).detach();
 }
 
+void CSettings::checkWakeUpServerMode()
+{
+	if (getWakeUpServerMode()) {
+		// Update the control after the HTTP response is checked
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Successfully Reach!"));
+	}
+	else {
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Failed to Reach!"));
+	}
+}
 
 
 void CSettings::OnBnClickedButton1()
@@ -75,7 +87,7 @@ void CSettings::OnBnClickedButton1()
 		AfxMessageBox(_T("Successly saved!"), MB_ICONINFORMATION | MB_OK);
 	}
 	else {
-		AfxMessageBox(TEXT("Invalid Wake Up Server URL!"));
+		AfxMessageBox(TEXT("Failed to Reach Wake Up Server URL!"));
 	}
 }
 

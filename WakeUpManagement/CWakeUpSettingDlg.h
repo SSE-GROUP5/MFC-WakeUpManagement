@@ -48,6 +48,7 @@ public:
 private:
 	CComboBox cb_triggers;
 	CComboBox cb_targets;
+	void checkWakeUpServerMode();
 public:
 	afx_msg void OnCbnSelchangeCombo2();
 	afx_msg void OnCbnSelchangeCombo1();

@@ -9,8 +9,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-
-
+extern BOOL getWakeUpServerMode();
 
 // CDevicesSettingDlg
 
@@ -70,15 +69,14 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_triggers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
 	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
 	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
-	//m_triggers.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
 	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	GetRequestTriggers();
+	//GetRequestTriggers();
 
 	m_target_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
 	m_target_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
 	m_target_devices.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	m_target_devices.SetExtendedStyle(m_target_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	GetRequestTargetDevices();
+	//GetRequestTargetDevices();
 
 
 	//Create the ToolTip control
@@ -96,6 +94,21 @@ void CDevicesSettingDlg::OnInitialUpdate()
 		m_ToolTip.AddTool(tooltip_targets, _T("Targets: XXXXXXXX"));
 
 		m_ToolTip.Activate(TRUE);
+	}
+
+	std::thread(&CDevicesSettingDlg::checkWakeUpServerMode, this).detach();
+}
+
+void CDevicesSettingDlg::checkWakeUpServerMode()
+{
+	if (getWakeUpServerMode()) {
+		// Update the control after the HTTP response is checked
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
+		GetRequestTriggers();
+		GetRequestTargetDevices();
+	}
+	else {
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: OFF"));
 	}
 }
 

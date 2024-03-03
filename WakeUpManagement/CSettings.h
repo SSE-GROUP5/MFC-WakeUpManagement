@@ -33,6 +33,7 @@ public:
 private:
 	CFont m_Title_Font;
 	CEdit wake_up_server_url;
+	void checkWakeUpServerMode();
 };
 
 

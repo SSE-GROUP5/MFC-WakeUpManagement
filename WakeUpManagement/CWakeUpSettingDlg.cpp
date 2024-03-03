@@ -12,7 +12,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-
+extern BOOL getWakeUpServerMode();
 
 // CWakeUpSettingDlg
 
@@ -89,10 +89,23 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.InsertColumn(5, TEXT("Target Action"), LVCFMT_CENTER, 250);
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	GetRequestUsers();
-	GetRequestTriggers();
-	GetRequestTargets();
-	GetRequestForSignals();
+	std::thread(&CWakeUpSettingDlg::checkWakeUpServerMode, this).detach();
+
+}
+
+void CWakeUpSettingDlg::checkWakeUpServerMode()
+{
+	if (getWakeUpServerMode()) {
+		// Update the control after the HTTP response is checked
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
+		GetRequestUsers();
+		GetRequestTriggers();
+		GetRequestTargets();
+		GetRequestForSignals();
+	}
+	else {
+		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: OFF"));
+	}
 }
 
 void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
