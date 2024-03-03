@@ -111,21 +111,6 @@ BOOL CPatientRecordDlg::getWakeUpServerMode()
 	return (r.status_code == 200);
 }
 
-
-//BOOL CPatientRecordDlg::getWakeUpServerMode()
-//{
-//	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001" });
-//	if (r.status_code == 200) {
-//		GetDlgItem(IDC_WAKE_UP_SERVER)->SetWindowTextW(TEXT("Wake Up Server: ON"));
-//		return true;
-//	}
-//	else {
-//		GetDlgItem(IDC_WAKE_UP_SERVER)->SetWindowTextW(TEXT("Wake Up Server: OFF"));
-//	}
-//
-//	return false;
-//}
-
 void CPatientRecordDlg::getRequestPatient()
 {
 	m_patient_record.DeleteAllItems();

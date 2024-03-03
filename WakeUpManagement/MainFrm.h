@@ -5,6 +5,7 @@
 #pragma once
 
 extern CString global_wake_up_server_url;
+extern BOOL getWakeUpServerMode();
 
 //Customised message
 #define NM_HOME (WM_USER + 99)

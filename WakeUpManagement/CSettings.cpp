@@ -6,6 +6,7 @@
 #include "CSettings.h"
 
 extern CString global_wake_up_server_url;
+extern BOOL getWakeUpServerMode();
 
 // CSettings
 
@@ -69,12 +70,12 @@ void CSettings::OnBnClickedButton1()
 	// TODO: Add your control notification handler code here
 	CString str;
 	wake_up_server_url.GetWindowTextW(str);
-	if (str.IsEmpty()) {
-		AfxMessageBox(TEXT("Wake Up Server URL cannot be empty!"));
+	global_wake_up_server_url = str;
+	if (getWakeUpServerMode()) {
+		AfxMessageBox(_T("Successly saved!"), MB_ICONINFORMATION | MB_OK);
 	}
 	else {
-		global_wake_up_server_url = str;
-		AfxMessageBox(_T("Successly saved!"), MB_ICONINFORMATION | MB_OK);
+		AfxMessageBox(TEXT("Invalid Wake Up Server URL!"));
 	}
 }
 

@@ -5,6 +5,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "WakeUpManagement.h"
+#include <cpr/cpr.h>
+#include <iostream>
 
 #include "MainFrm.h"
 #include "CSelectView.h"
@@ -20,7 +22,16 @@
 #define new DEBUG_NEW
 #endif
 
+//global variable and function:
+
 CString global_wake_up_server_url;
+
+BOOL getWakeUpServerMode()
+{
+	std::string url = CStringA(global_wake_up_server_url);
+	cpr::Response r = cpr::Get(cpr::Url{ url });
+	return (r.status_code == 200);
+}
 
 // CMainFrame
 
@@ -205,4 +216,3 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
-
