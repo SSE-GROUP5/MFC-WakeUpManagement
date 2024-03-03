@@ -66,11 +66,21 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_triggers.SetFont(&m_Table_Font);
 	m_target_devices.SetFont(&m_Table_Font);
 
+	CRect rect_triggers;
+	m_triggers.GetWindowRect(&rect_triggers);
+	ScreenToClient(&rect_triggers);
+	m_triggers.MoveWindow(rect_triggers.left, rect_triggers.top, 854, 850, TRUE);
+
 	m_triggers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
 	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
 	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	m_triggers.InsertColumn(4, TEXT("Confirmed"), LVCFMT_CENTER, 150);
 	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	CRect rect_targets;
+	m_target_devices.GetWindowRect(&rect_targets);
+	ScreenToClient(&rect_targets);
+	m_target_devices.MoveWindow(rect_targets.left, rect_triggers.top, 554, 850, TRUE);
 
 	m_target_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
 	m_target_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
@@ -123,7 +133,7 @@ void CDevicesSettingDlg::GetRequestTriggers()
 		CString type = CString(item["type"].get<std::string>().c_str());
 		BOOL confirmed = item["confirmed"].get<BOOL>();
 		CString strConfirmed;
-		strConfirmed.Format(_T("%s"), confirmed ? _T("TRUE") : _T("FALSE"));
+		strConfirmed.Format(_T("%s"), confirmed ? _T("True") : _T("False"));
 
 		// Add the data to the list control
 		int index = m_triggers.InsertItem(m_triggers.GetItemCount(), id);

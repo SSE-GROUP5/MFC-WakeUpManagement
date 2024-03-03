@@ -70,11 +70,14 @@ void CPatientRecordDlg::OnInitialUpdate()
 	m_Table_Font.CreatePointFont(100, _T("Calibri"));
 	m_patient_record.SetFont(&m_Table_Font);
 
-	// TODO: Add your specialized code here and/or call the base class
+	CRect rect;
+	m_patient_record.GetWindowRect(&rect);
+	ScreenToClient(&rect);
+	m_patient_record.MoveWindow(rect.left, rect.top, 754, 850, TRUE);
 
-	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_CENTER, 215);
-	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_CENTER, 215);
-	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_CENTER, 210);
+	m_patient_record.InsertColumn(1, TEXT("First Name"), LVCFMT_CENTER, 250);
+	m_patient_record.InsertColumn(2, TEXT("Last Name"), LVCFMT_CENTER, 250);
+	m_patient_record.InsertColumn(3, TEXT("Gosh ID"), LVCFMT_CENTER, 250);
 	m_patient_record.SetExtendedStyle(m_patient_record.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	//Create the ToolTip control
