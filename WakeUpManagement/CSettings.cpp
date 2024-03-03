@@ -56,7 +56,6 @@ void CSettings::Dump(CDumpContext& dc) const
 void CSettings::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
-	global_wake_up_server_url = AfxGetApp()->GetProfileString(_T("Settings"), _T("GlobalVariable"), _T("http://localhost:5001/"));
 	m_Title_Font.CreatePointFont(200, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
@@ -71,6 +70,7 @@ void CSettings::OnBnClickedButton1()
 	CString str;
 	wake_up_server_url.GetWindowTextW(str);
 	global_wake_up_server_url = str;
+	AfxGetApp()->WriteProfileString(_T("Settings"), _T("GlobalVariable"), global_wake_up_server_url);
 	if (getWakeUpServerMode()) {
 		AfxMessageBox(_T("Successly saved!"), MB_ICONINFORMATION | MB_OK);
 	}
@@ -79,9 +79,3 @@ void CSettings::OnBnClickedButton1()
 	}
 }
 
-void CSettings::PostNcDestroy()
-{
-	// TODO: Add your specialized code here and/or call the base class
-	AfxGetApp()->WriteProfileString(_T("Settings"), _T("GlobalVariable"), global_wake_up_server_url);
-	CFormView::PostNcDestroy();
-}

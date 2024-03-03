@@ -91,6 +91,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//Show in the center
 	CenterWindow();
 
+	global_wake_up_server_url = AfxGetApp()->GetProfileString(_T("Settings"), _T("GlobalVariable"), _T("http://localhost:5001/"));
+
 	return 0;
 }
 

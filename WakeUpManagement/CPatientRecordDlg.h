@@ -40,7 +40,6 @@ private:
 	CListCtrl m_patient_record;
 	void getRequestPatient();
 	CToolTipCtrl m_ToolTip;
-	BOOL getWakeUpServerMode();
 	void checkWakeUpServerMode();
 };
 

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+extern BOOL getWakeUpServerMode();
+
 // CPatientRecordDlg
 
 IMPLEMENT_DYNCREATE(CPatientRecordDlg, CFormView)
@@ -105,11 +107,6 @@ void CPatientRecordDlg::checkWakeUpServerMode()
 	}
 }
 
-BOOL CPatientRecordDlg::getWakeUpServerMode()
-{
-	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001" });
-	return (r.status_code == 200);
-}
 
 void CPatientRecordDlg::getRequestPatient()
 {
