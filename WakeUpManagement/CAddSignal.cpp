@@ -129,14 +129,7 @@ void CAddSignal::OnCbnSelchangeCombo1()
 	for (const auto& item : jsonList_triggers) {
 		// Check if the "matter_id" matches
 		if (item["name"] == CT2A(str)) {
-			if (item["type"] == "Sound") {
-				cb_trigger_action.AddString(_T("Tap"));
-				cb_trigger_action.AddString(_T("Morse"));
-			}
-			else if (item["type"] == "Vision") {
-				cb_trigger_action.AddString(_T("Blink Eyes"));
-				cb_trigger_action.AddString(_T("Fall Detection"));
-			}
+			cb_trigger_action.AddString(CString(item["type"].get<std::string>().c_str()));
 			break;
 		}
 	}
