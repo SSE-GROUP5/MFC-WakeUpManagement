@@ -307,34 +307,38 @@ void CWakeUpSettingDlg::GetRequestForSignals()
 void CWakeUpSettingDlg::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
-
-	CDeleteSignal dlg;
-	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
-	if (pos != nullptr) 
-	{
-		int index = cb_users.GetCurSel();
-		CString str;
-		cb_users.GetLBText(index, str);
-		CString user_id;
-		int colonIndex = str.Find(_T("#"));
-		if (colonIndex != -1) {
-			user_id = str.Mid(colonIndex + 1);
-		}
-		int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
-		dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
-		dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
-		dlg.trigger_value = m_wake_up_setting_list.GetItemText(nItem, 2);
-		dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
-		dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
-		dlg.user_id = user_id;
-		if (dlg.DoModal() == IDOK) 
+	if (getWakeUpServerMode()) {
+		CDeleteSignal dlg;
+		POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
+		if (pos != nullptr)
 		{
-			GetRequestForSignals();
+			int index = cb_users.GetCurSel();
+			CString str;
+			cb_users.GetLBText(index, str);
+			CString user_id;
+			int colonIndex = str.Find(_T("#"));
+			if (colonIndex != -1) {
+				user_id = str.Mid(colonIndex + 1);
+			}
+			int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
+			dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
+			dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
+			dlg.trigger_value = m_wake_up_setting_list.GetItemText(nItem, 2);
+			dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
+			dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
+			dlg.user_id = user_id;
+			if (dlg.DoModal() == IDOK)
+			{
+				GetRequestForSignals();
+			}
+		}
+		else
+		{
+			MessageBox(TEXT("Please select a signal!"));
 		}
 	}
-	else
-	{
-		MessageBox(TEXT("Please select a signal!"));
+	else {
+		AfxMessageBox(TEXT("Wake Up Server has not been Connected!"));
 	}
 }
 
@@ -342,30 +346,8 @@ void CWakeUpSettingDlg::OnBnClickedButton1()
 void CWakeUpSettingDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
-	CAddSignal dlg;
-	int index = cb_users.GetCurSel();
-	CString str;
-	cb_users.GetLBText(index, str);
-	CString user_id;
-	int colonIndex = str.Find(_T("#"));
-	if (colonIndex != -1) {
-		user_id = str.Mid(colonIndex + 1);
-	}
-	dlg.user_id = user_id;
-	if (dlg.DoModal() == IDOK) 
-	{
-		GetRequestForSignals();
-	}
-}
-
-
-void CWakeUpSettingDlg::OnBnClickedButton2()
-{
-	// TODO: Add your control notification handler code here
-	CEditSignal dlg;
-	POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
-	if (pos != nullptr)
-	{
+	if (getWakeUpServerMode()) {
+		CAddSignal dlg;
 		int index = cb_users.GetCurSel();
 		CString str;
 		cb_users.GetLBText(index, str);
@@ -374,21 +356,53 @@ void CWakeUpSettingDlg::OnBnClickedButton2()
 		if (colonIndex != -1) {
 			user_id = str.Mid(colonIndex + 1);
 		}
-		int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
-		dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
-		dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
-		dlg.trigger_value = m_wake_up_setting_list.GetItemText(nItem, 2);
-		dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
-		dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
 		dlg.user_id = user_id;
-		if (dlg.DoModal() == IDOK) 
+		if (dlg.DoModal() == IDOK)
 		{
 			GetRequestForSignals();
 		}
 	}
-	else
-	{
-		MessageBox(TEXT("Please select a signal!"));
+	else {
+		AfxMessageBox(TEXT("Wake Up Server has not been Connected!"));
+	}
+}
+
+
+void CWakeUpSettingDlg::OnBnClickedButton2()
+{
+	// TODO: Add your control notification handler code here
+	if (getWakeUpServerMode()) {
+		CEditSignal dlg;
+		POSITION pos = m_wake_up_setting_list.GetFirstSelectedItemPosition();
+		if (pos != nullptr)
+		{
+			int index = cb_users.GetCurSel();
+			CString str;
+			cb_users.GetLBText(index, str);
+			CString user_id;
+			int colonIndex = str.Find(_T("#"));
+			if (colonIndex != -1) {
+				user_id = str.Mid(colonIndex + 1);
+			}
+			int nItem = m_wake_up_setting_list.GetNextSelectedItem(pos);
+			dlg.trigger_name = m_wake_up_setting_list.GetItemText(nItem, 0);
+			dlg.trigger_action = m_wake_up_setting_list.GetItemText(nItem, 1);
+			dlg.trigger_value = m_wake_up_setting_list.GetItemText(nItem, 2);
+			dlg.target_id = m_wake_up_setting_list.GetItemText(nItem, 3);
+			dlg.target_action = m_wake_up_setting_list.GetItemText(nItem, 4);
+			dlg.user_id = user_id;
+			if (dlg.DoModal() == IDOK)
+			{
+				GetRequestForSignals();
+			}
+		}
+		else
+		{
+			MessageBox(TEXT("Please select a signal!"));
+		}
+	}
+	else {
+		AfxMessageBox(TEXT("Wake Up Server has not been Connected!"));
 	}
 }
 

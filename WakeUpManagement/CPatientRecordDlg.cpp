@@ -129,51 +129,58 @@ void CPatientRecordDlg::getRequestPatient()
 
 void CPatientRecordDlg::OnBnClickedButton1()
 {
-	CString edit_first_name;
-	CString edit_last_name;
-	CString edit_gosh_id;
+	if (getWakeUpServerMode()) {
+		{
+			CString edit_first_name;
+			CString edit_last_name;
+			CString edit_gosh_id;
 
-	first_name.GetWindowTextW(edit_first_name);
-	last_name.GetWindowTextW(edit_last_name);
-	gosh_id.GetWindowTextW(edit_gosh_id);
+			first_name.GetWindowTextW(edit_first_name);
+			last_name.GetWindowTextW(edit_last_name);
+			gosh_id.GetWindowTextW(edit_gosh_id);
 
-	boolean postRequest = true;
-	for (int i = 0; i < m_patient_record.GetItemCount(); ++i) {
-		if (m_patient_record.GetItemText(i, 1) == edit_first_name &&
-			m_patient_record.GetItemText(i, 2) == edit_last_name &&
-			m_patient_record.GetItemText(i, 3) == edit_gosh_id) {
-			// Item already exists, handle accordingly (e.g., show a message)
-			MessageBox(TEXT("The patient already has been recorded!"));
-			postRequest = false;
-			break;
+			boolean postRequest = true;
+			for (int i = 0; i < m_patient_record.GetItemCount(); ++i) {
+				if (m_patient_record.GetItemText(i, 1) == edit_first_name &&
+					m_patient_record.GetItemText(i, 2) == edit_last_name &&
+					m_patient_record.GetItemText(i, 3) == edit_gosh_id) {
+					// Item already exists, handle accordingly (e.g., show a message)
+					MessageBox(TEXT("The patient already has been recorded!"));
+					postRequest = false;
+					break;
+				}
+			}
+
+			if (postRequest) {
+				std::string str_edit_first_name = CT2A(edit_first_name);
+				std::string std_edit_last_name = CT2A(edit_last_name);
+				std::string std_edit_gosh_id = CT2A(edit_gosh_id);
+
+				cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/users" },
+					cpr::Header{ {"Content-Type", "application/json"} },
+					cpr::Body{ "{ \"first_name\": \"" + str_edit_first_name +
+							   "\", \"last_name\": \"" + std_edit_last_name +
+							   "\", \"gosh_id\": \"" + std_edit_gosh_id + "\" }" });
+
+				if (response.status_code == 200) {
+					getRequestPatient();
+					AfxMessageBox(_T("Successly added!"), MB_ICONINFORMATION | MB_OK);
+				}
+				else {
+					//auto json_error = nlohmann::json::parse(response.text);
+					std::string error_message = response.text;
+					CString m_error_message(error_message.c_str());
+
+					CString m_error_status_code;
+					m_error_status_code.Format(_T("%d Error: "), response.status_code);
+
+					AfxMessageBox(m_error_status_code + m_error_message + "\n " + "Please check your input!", MB_ICONERROR | MB_OK);
+				}
+			}
 		}
 	}
-
-	if (postRequest) {
-		std::string str_edit_first_name = CT2A(edit_first_name);
-		std::string std_edit_last_name = CT2A(edit_last_name);
-		std::string std_edit_gosh_id = CT2A(edit_gosh_id);
-
-		cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/users" },
-			cpr::Header{ {"Content-Type", "application/json"} },
-			cpr::Body{ "{ \"first_name\": \"" + str_edit_first_name +
-					   "\", \"last_name\": \"" + std_edit_last_name +
-					   "\", \"gosh_id\": \"" + std_edit_gosh_id + "\" }" });
-
-		if (response.status_code == 200) {
-			getRequestPatient();
-			AfxMessageBox(_T("Successly added!"), MB_ICONINFORMATION | MB_OK);
-		}
-		else {
-			//auto json_error = nlohmann::json::parse(response.text);
-			std::string error_message = response.text;
-			CString m_error_message(error_message.c_str());
-
-			CString m_error_status_code;
-			m_error_status_code.Format(_T("%d Error: "), response.status_code);
-
-			AfxMessageBox(m_error_status_code + m_error_message + "\n " + "Please check your input!", MB_ICONERROR | MB_OK);
-		}
+	else {
+		AfxMessageBox(TEXT("Wake Up Server has not been Connected!"));
 	}
 }
 

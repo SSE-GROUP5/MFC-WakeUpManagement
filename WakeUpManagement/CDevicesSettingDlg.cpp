@@ -70,13 +70,11 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
 	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	//GetRequestTriggers();
 
 	m_target_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
 	m_target_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
 	m_target_devices.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	m_target_devices.SetExtendedStyle(m_target_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	//GetRequestTargetDevices();
 
 
 	//Create the ToolTip control
@@ -163,10 +161,15 @@ BOOL CDevicesSettingDlg::PreTranslateMessage(MSG* pMsg)
 void CDevicesSettingDlg::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
-	CAddTrigger dlg;
-	if (dlg.DoModal() == IDOK)
-	{
-		GetRequestTriggers();
+	if (getWakeUpServerMode()) {
+		CAddTrigger dlg;
+		if (dlg.DoModal() == IDOK)
+		{
+			GetRequestTriggers();
+		}
+	}
+	else {
+		AfxMessageBox(TEXT("Wake Up Server has not been Connected!"));
 	}
 }
 
