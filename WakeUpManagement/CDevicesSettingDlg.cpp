@@ -69,6 +69,7 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	m_triggers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
 	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
 	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
+	m_triggers.InsertColumn(4, TEXT("Confirmed"), LVCFMT_CENTER, 150);
 	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	m_target_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
@@ -120,11 +121,15 @@ void CDevicesSettingDlg::GetRequestTriggers()
 		CString id = CString(item["id"].get<std::string>().c_str());
 		CString name = CString(item["name"].get<std::string>().c_str());
 		CString type = CString(item["type"].get<std::string>().c_str());
+		BOOL confirmed = item["confirmed"].get<BOOL>();
+		CString strConfirmed;
+		strConfirmed.Format(_T("%s"), confirmed ? _T("TRUE") : _T("FALSE"));
 
 		// Add the data to the list control
 		int index = m_triggers.InsertItem(m_triggers.GetItemCount(), id);
 		m_triggers.SetItemText(index, 1, name);
 		m_triggers.SetItemText(index, 2, type);
+		m_triggers.SetItemText(index, 3, strConfirmed);
 	}
 }
 
