@@ -21,7 +21,7 @@ IMPLEMENT_DYNCREATE(CWakeUpSettingDlg, CFormView)
 CWakeUpSettingDlg::CWakeUpSettingDlg()
 	: CFormView(IDD_WAKE_UP_SETTING)
 {
-
+	wake_up_server_mode = getWakeUpServerMode();
 }
 
 CWakeUpSettingDlg::~CWakeUpSettingDlg()
@@ -93,13 +93,12 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.InsertColumn(5, TEXT("Target Action"), LVCFMT_CENTER, 250);
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	std::thread(&CWakeUpSettingDlg::checkWakeUpServerMode, this).detach();
-
+	checkWakeUpServerMode();
 }
 
 void CWakeUpSettingDlg::checkWakeUpServerMode()
 {
-	if (getWakeUpServerMode()) {
+	if (wake_up_server_mode) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
 		GetRequestUsers();

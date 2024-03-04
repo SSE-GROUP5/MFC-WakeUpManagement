@@ -201,6 +201,7 @@
     <ClInclude Include="CEditSignal.h" />
     <ClInclude Include="CExportFhir.h" />
     <ClInclude Include="CHomeDlg.h" />
+    <ClInclude Include="CLoading.h" />
     <ClInclude Include="CPatientRecordDlg.h" />
     <ClInclude Include="CSelectView.h" />
     <ClInclude Include="CSettings.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="CEditSignal.cpp" />
     <ClCompile Include="CExportFhir.cpp" />
     <ClCompile Include="CHomeDlg.cpp" />
+    <ClCompile Include="CLoading.cpp" />
     <ClCompile Include="CPatientRecordDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />
     <ClCompile Include="CSettings.cpp" />

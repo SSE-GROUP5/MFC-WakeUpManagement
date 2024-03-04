@@ -4,7 +4,6 @@
 #include "pch.h"
 #include "WakeUpManagement.h"
 #include "CSettings.h"
-#include <thread>
 
 extern CString global_wake_up_server_url;
 extern BOOL getWakeUpServerMode();
@@ -16,7 +15,7 @@ IMPLEMENT_DYNCREATE(CSettings, CFormView)
 CSettings::CSettings()
 	: CFormView(IDD_SETTINGS)
 {
-
+	wake_up_server_mode = getWakeUpServerMode();
 }
 
 CSettings::~CSettings()
@@ -61,12 +60,12 @@ void CSettings::OnInitialUpdate()
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
 	wake_up_server_url.SetWindowTextW(global_wake_up_server_url);
-	std::thread(&CSettings::checkWakeUpServerMode, this).detach();
+	checkWakeUpServerMode();
 }
 
 void CSettings::checkWakeUpServerMode()
 {
-	if (getWakeUpServerMode()) {
+	if (wake_up_server_mode) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Successfully Reach!"));
 	}

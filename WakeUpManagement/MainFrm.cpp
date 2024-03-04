@@ -17,6 +17,7 @@
 #include "CHomeDlg.h"
 #include "CExportFhir.h"
 #include "CSettings.h"
+#include "CLoading.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -143,6 +144,16 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
+	CLoading* pLoadingDlg = nullptr;
+	if (wParam == NM_A || wParam == NM_B || wParam == NM_C || wParam == NM_E)
+	{
+		pLoadingDlg = new CLoading(this);
+		pLoadingDlg->Create(IDD_LOADING, this);
+		pLoadingDlg->SetWindowPos(nullptr, 1000, 600, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		pLoadingDlg->OnInitDialog();
+		pLoadingDlg->ShowWindow(SW_SHOW);
+	}
+
 	CCreateContext Context;
 	if (wParam == NM_HOME)
 	{
@@ -167,6 +178,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
+		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	else if (wParam == NM_B)
 	{
@@ -179,6 +191,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
+		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	else if (wParam == NM_C)
 	{
@@ -191,6 +204,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
+		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	else if (wParam == NM_D)
 	{
@@ -215,6 +229,12 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
+		//pLoadingDlg->ShowWindow(SW_HIDE);
+	}
+	if (pLoadingDlg)
+	{
+		pLoadingDlg->DestroyWindow();
+		delete pLoadingDlg;
 	}
 	return 0;
 }

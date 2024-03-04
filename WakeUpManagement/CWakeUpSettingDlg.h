@@ -37,19 +37,18 @@ private:
 	CFont m_Title_Font;
 	CFont m_Table_Font;
 	CComboBox cb_users;
+	CComboBox cb_triggers;
+	CComboBox cb_targets;
+	bool wake_up_server_mode;
 	void GetRequestSignalsForDefaultUser();
 	void GetRequestSignalsForAUser(CString str);
 	void GetRequestUsers();
 	void GetRequestTriggers();
 	void GetRequestTargets();
 	void GetRequestForSignals();
-public:
-	afx_msg void OnBnClickedButton2();
-private:
-	CComboBox cb_triggers;
-	CComboBox cb_targets;
 	void checkWakeUpServerMode();
 public:
+	afx_msg void OnBnClickedButton2();
 	afx_msg void OnCbnSelchangeCombo2();
 	afx_msg void OnCbnSelchangeCombo1();
 };

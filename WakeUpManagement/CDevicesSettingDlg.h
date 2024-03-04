@@ -39,6 +39,7 @@ private:
 	void GetRequestTargetDevices();
 	CToolTipCtrl m_ToolTip;
 	void checkWakeUpServerMode();
+	bool wake_up_server_mode;
 public:
 	afx_msg void OnBnClickedButton4();
 };

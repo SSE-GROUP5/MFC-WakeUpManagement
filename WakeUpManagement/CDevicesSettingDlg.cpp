@@ -18,7 +18,7 @@ IMPLEMENT_DYNCREATE(CDevicesSettingDlg, CFormView)
 CDevicesSettingDlg::CDevicesSettingDlg()
 	: CFormView(IDD_DIALOG_DEVICES_SETTING)
 {
-
+	wake_up_server_mode = getWakeUpServerMode();
 }
 
 CDevicesSettingDlg::~CDevicesSettingDlg()
@@ -105,12 +105,12 @@ void CDevicesSettingDlg::OnInitialUpdate()
 		m_ToolTip.Activate(TRUE);
 	}
 
-	std::thread(&CDevicesSettingDlg::checkWakeUpServerMode, this).detach();
+	checkWakeUpServerMode();
 }
 
 void CDevicesSettingDlg::checkWakeUpServerMode()
 {
-	if (getWakeUpServerMode()) {
+	if (wake_up_server_mode) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
 		GetRequestTriggers();

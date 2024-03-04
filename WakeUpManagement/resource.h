@@ -26,6 +26,8 @@
 #define IDD_DIALOG2                     337
 #define IDD_EDIT_SIGNAL                 337
 #define IDD_ADD_TRIGGER                 342
+#define IDD_DIALOG3                     344
+#define IDD_LOADING                     344
 #define IDC_LIST1                       1000
 #define IDC_LIST2                       1001
 #define IDC_BUTTON1                     1002
@@ -65,15 +67,17 @@
 #define IDC_TOOLTIP_TRIGGER_VALUE       1026
 #define IDC_WAKE_UP_SERVER              1026
 #define IDC_TOOLTIP_TARGET_ID           1027
+#define IDC_STATIC_MESSAGE              1027
+#define IDC_MESSAGE                     1027
 #define IDC_TOOLTIP_TARGET_ACTION       1028
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        344
+#define _APS_NEXT_RESOURCE_VALUE        348
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           321
 #endif
 #endif

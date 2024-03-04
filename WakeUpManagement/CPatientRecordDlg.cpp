@@ -17,7 +17,7 @@ IMPLEMENT_DYNCREATE(CPatientRecordDlg, CFormView)
 CPatientRecordDlg::CPatientRecordDlg()
 	: CFormView(IDD_DIALOG_PATIENT_RECORD)
 {
-
+	wake_up_server_mode = getWakeUpServerMode();
 }
 
 CPatientRecordDlg::~CPatientRecordDlg()
@@ -94,13 +94,12 @@ void CPatientRecordDlg::OnInitialUpdate()
 		m_ToolTip.Activate(TRUE);
 	}
 
-	std::thread(&CPatientRecordDlg::checkWakeUpServerMode, this).detach();
-
+	checkWakeUpServerMode();
 }
 
 void CPatientRecordDlg::checkWakeUpServerMode()
 {
-	if (getWakeUpServerMode()) {
+	if (wake_up_server_mode) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
 		getRequestPatient();
