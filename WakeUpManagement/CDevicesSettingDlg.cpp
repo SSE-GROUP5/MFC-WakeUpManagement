@@ -62,9 +62,6 @@ void CDevicesSettingDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	m_Table_Font.CreatePointFont(100, _T("Calibri"));
-	m_triggers.SetFont(&m_Table_Font);
-	m_target_devices.SetFont(&m_Table_Font);
 
 	CRect rect_triggers;
 	m_triggers.GetWindowRect(&rect_triggers);
@@ -80,10 +77,10 @@ void CDevicesSettingDlg::OnInitialUpdate()
 	CRect rect_targets;
 	m_target_devices.GetWindowRect(&rect_targets);
 	ScreenToClient(&rect_targets);
-	m_target_devices.MoveWindow(rect_targets.left, rect_triggers.top, 554, 850, TRUE);
+	m_target_devices.MoveWindow(rect_targets.left, rect_triggers.top, 654, 850, TRUE);
 
 	m_target_devices.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 250);
-	m_target_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
+	m_target_devices.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 250);
 	m_target_devices.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
 	m_target_devices.SetExtendedStyle(m_target_devices.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 

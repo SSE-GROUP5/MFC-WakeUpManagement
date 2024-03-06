@@ -52,7 +52,7 @@ void CExportFhir::Dump(CDumpContext& dc) const
 void CExportFhir::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
-	m_Title_Font.CreatePointFont(150, _T("Calibri"));
+	m_Title_Font.CreatePointFont(180, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
 }

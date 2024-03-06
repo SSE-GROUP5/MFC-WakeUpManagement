@@ -32,7 +32,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 private:
 	CFont m_Title_Font;
-	CFont m_Table_Font;
 	CEdit first_name;
 	CEdit last_name;
 	CEdit gosh_id;

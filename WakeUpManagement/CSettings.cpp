@@ -56,7 +56,7 @@ void CSettings::Dump(CDumpContext& dc) const
 void CSettings::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
-	m_Title_Font.CreatePointFont(200, _T("Calibri"));
+	m_Title_Font.CreatePointFont(180, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
 	wake_up_server_url.SetWindowTextW(global_wake_up_server_url);

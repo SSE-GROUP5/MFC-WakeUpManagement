@@ -35,7 +35,6 @@ public:
 private:
 	CListCtrl m_wake_up_setting_list;
 	CFont m_Title_Font;
-	CFont m_Table_Font;
 	CComboBox cb_users;
 	CComboBox cb_triggers;
 	CComboBox cb_targets;

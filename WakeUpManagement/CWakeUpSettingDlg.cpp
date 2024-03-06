@@ -74,22 +74,20 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	// TODO: Add your specialized code here and/or call the base class
 
 	// Creates a 12-point-Courier-font
-	m_Title_Font.CreatePointFont(120, _T("Calibri"));
+	m_Title_Font.CreatePointFont(180, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 
 
-	m_Table_Font.CreatePointFont(100, _T("Calibri"));
-	m_wake_up_setting_list.SetFont(&m_Table_Font);
 
 	CRect rect;
 	m_wake_up_setting_list.GetWindowRect(&rect);
 	ScreenToClient(&rect);
-	m_wake_up_setting_list.MoveWindow(rect.left, rect.top, 1354, 750, TRUE);
+	m_wake_up_setting_list.MoveWindow(rect.left, rect.top, 1454, 750, TRUE);
 
-	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Name"), LVCFMT_CENTER, 300);
+	m_wake_up_setting_list.InsertColumn(1, TEXT("Trigger Name"), LVCFMT_CENTER, 350);
 	m_wake_up_setting_list.InsertColumn(2, TEXT("Trigger Action"), LVCFMT_CENTER, 250);
 	m_wake_up_setting_list.InsertColumn(3, TEXT("Trigger Value"), LVCFMT_CENTER, 250);
-	m_wake_up_setting_list.InsertColumn(4, TEXT("Target ID"), LVCFMT_CENTER, 300);
+	m_wake_up_setting_list.InsertColumn(4, TEXT("Target ID"), LVCFMT_CENTER, 350);
 	m_wake_up_setting_list.InsertColumn(5, TEXT("Target Action"), LVCFMT_CENTER, 250);
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 

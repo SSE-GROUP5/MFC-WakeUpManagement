@@ -34,7 +34,6 @@ public:
 private:
 	CListCtrl m_triggers;
 	CListCtrl m_target_devices;
-	CFont m_Table_Font;
 	void GetRequestTriggers();
 	void GetRequestTargetDevices();
 	CToolTipCtrl m_ToolTip;

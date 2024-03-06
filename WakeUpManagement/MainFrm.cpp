@@ -178,7 +178,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
-		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	else if (wParam == NM_B)
 	{
@@ -191,7 +190,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
-		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	else if (wParam == NM_C)
 	{
@@ -204,7 +202,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
-		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	else if (wParam == NM_D)
 	{
@@ -229,7 +226,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
-		//pLoadingDlg->ShowWindow(SW_HIDE);
 	}
 	if (pLoadingDlg)
 	{
