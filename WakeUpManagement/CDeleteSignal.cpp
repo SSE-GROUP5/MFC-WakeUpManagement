@@ -9,7 +9,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-
+extern CString global_wake_up_server_url;
 // CDeleteSignal dialog
 
 IMPLEMENT_DYNAMIC(CDeleteSignal, CDialogEx)
@@ -49,7 +49,8 @@ void CDeleteSignal::OnBnClickedOk()
 	std::string std_target_action = CT2A(target_action);
 	std::string std_user_id = CT2A(user_id);
 
-	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r = cpr::Get(cpr::Url{ wake_up_server_url + "signals" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 	cpr::Response response_delete;
 
@@ -66,7 +67,7 @@ void CDeleteSignal::OnBnClickedOk()
 				(user_id.IsEmpty() && item["user_id"].is_null() || user_id == CString(item["user_id"].get<std::string>().c_str())))
 			{
 				std::string signal_id = item["id"].get<std::string>();
-				response_delete = cpr::Delete(cpr::Url{ "http://localhost:5001/signals/" + signal_id },
+				response_delete = cpr::Delete(cpr::Url{ wake_up_server_url + "signals/" + signal_id },
 									cpr::Header{ {"Content-Type", "application/json"} });
 				if (response_delete.status_code == 200) {
 					CDialogEx::OnOK();

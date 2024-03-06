@@ -9,6 +9,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+extern CString global_wake_up_server_url;
 
 // CAddTrigger dialog
 
@@ -61,7 +62,8 @@ void CAddTrigger::OnBnClickedOk()
 	std::string std_edit_trigger_zmq_url = CT2A(edit_trigger_zmq_url);
 
 	if (!str_edit_trigger_name.empty() && !std_edit_trigger_type.empty()) {
-		cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/triggers" },
+		std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+		cpr::Response response = cpr::Post(cpr::Url{ wake_up_server_url + "triggers" },
 				cpr::Header{ {"Content-Type", "application/json"} },
 				cpr::Body{ "{ \"name\": \"" + str_edit_trigger_name +
 							"\", \"type\": \"" + std_edit_trigger_type + "\" }" });

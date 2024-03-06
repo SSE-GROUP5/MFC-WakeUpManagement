@@ -10,7 +10,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-
+extern CString global_wake_up_server_url;
 
 // CAddSignal dialog
 
@@ -48,7 +48,8 @@ END_MESSAGE_MAP()
 
 void CAddSignal::GetRequestForTriggersCombo()
 {
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ wake_up_server_url + "triggers" });
 	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
 	for (const auto& item : jsonList_triggers) {
@@ -60,7 +61,8 @@ void CAddSignal::GetRequestForTriggersCombo()
 
 void CAddSignal::GetRequestForTargetsCombo()
 {
-	cpr::Response r_target_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_target_devices = cpr::Get(cpr::Url{ wake_up_server_url + "target_devices" });
 	nlohmann::json jsonList_target_devices = nlohmann::json::parse(r_target_devices.text);
 
 	for (const auto& item : jsonList_target_devices) {
@@ -123,7 +125,8 @@ void CAddSignal::OnCbnSelchangeCombo1()
 	CString str;
 	cb_trigger_name.GetLBText(index, str);
 
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ wake_up_server_url + "triggers" });
 	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
 	for (const auto& item : jsonList_triggers) {
@@ -145,7 +148,8 @@ void CAddSignal::OnCbnSelchangeCombo3()
 	CString str;
 	cb_target_id.GetLBText(index, str);
 	
-	cpr::Response r_target_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_target_devices = cpr::Get(cpr::Url{ wake_up_server_url + "target_devices" });
 	nlohmann::json jsonList_target_devices = nlohmann::json::parse(r_target_devices.text);
 	
 	for (const auto& item : jsonList_target_devices) {
@@ -190,7 +194,8 @@ void CAddSignal::OnBnClickedOk()
 		AfxMessageBox(TEXT("Input cannot be empty!"));
 	}
 
-	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r = cpr::Get(cpr::Url{ wake_up_server_url + "signals" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 	cpr::Response response_delete;
 
@@ -222,9 +227,11 @@ void CAddSignal::OnBnClickedOk()
 		std::string std_user_id = CT2A(user_id);
 
 		cpr::Response response;
+		std::string wake_up_server_url = CT2A(global_wake_up_server_url);
 		if (!user_id.IsEmpty())
 		{
-			response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+
+			response = cpr::Post(cpr::Url{ wake_up_server_url + "signals/set" },
 				cpr::Header{ {"Content-Type", "application/json"} },
 				cpr::Body{ "{ \"trigger_name\": \"" + std_trigger_name +
 						   "\", \"trigger_action\": \"" + std_trigger_action +
@@ -235,7 +242,7 @@ void CAddSignal::OnBnClickedOk()
 		}
 		else
 		{
-			response = cpr::Post(cpr::Url{ "http://localhost:5001/signals/set" },
+			response = cpr::Post(cpr::Url{ wake_up_server_url + "signals/set" },
 				cpr::Header{ {"Content-Type", "application/json"} },
 				cpr::Body{ "{ \"trigger_name\": \"" + std_trigger_name +
 						   "\", \"trigger_action\": \"" + std_trigger_action +

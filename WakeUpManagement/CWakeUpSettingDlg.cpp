@@ -12,6 +12,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+extern CString global_wake_up_server_url;
 extern BOOL getWakeUpServerMode();
 
 // CWakeUpSettingDlg
@@ -112,7 +113,8 @@ void CWakeUpSettingDlg::checkWakeUpServerMode()
 void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 {
 	m_wake_up_setting_list.DeleteAllItems();
-	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/signals" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r = cpr::Get(cpr::Url{ wake_up_server_url + "signals" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 
 	CString trigger_name;
@@ -191,7 +193,8 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 	}
 
 	std::string user_id_str = CT2A(user_id);
-	cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ "http://localhost:5001/signals/users/" + user_id_str });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_signals_for_user = cpr::Get(cpr::Url{ wake_up_server_url + "signals/users/" + user_id_str });
 	nlohmann::json jsonList_signals_for_user = nlohmann::json::parse(r_signals_for_user.text);
 
 	if (jsonList_signals_for_user.contains("signals")) {
@@ -235,7 +238,8 @@ void CWakeUpSettingDlg::GetRequestUsers()
 	cb_users.AddString(TEXT("Default User"));
 	cb_users.SetCurSel(0);
 
-	cpr::Response r_users = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_users = cpr::Get(cpr::Url{ wake_up_server_url + "users" });
 	nlohmann::json jsonList_users = nlohmann::json::parse(r_users.text);
 
 	for (const auto& item : jsonList_users) {
@@ -253,7 +257,8 @@ void CWakeUpSettingDlg::GetRequestTriggers()
 	cb_triggers.AddString(TEXT("All"));
 	cb_triggers.SetCurSel(0);
 
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ wake_up_server_url + "triggers" });
 	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
 	for (const auto& item : jsonList_triggers) {
@@ -269,8 +274,9 @@ void CWakeUpSettingDlg::GetRequestTargets()
 	cb_targets.AddString(TEXT("All"));
 	cb_targets.SetCurSel(0);
 
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
-	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_targets = cpr::Get(cpr::Url{ wake_up_server_url + "target_devices" });
+	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_targets.text);
 
 	for (const auto& item : jsonList_triggers) {
 		CString name = CString(item["name"].get<std::string>().c_str());

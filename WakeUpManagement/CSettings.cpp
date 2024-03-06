@@ -80,6 +80,13 @@ void CSettings::OnBnClickedButton1()
 	// TODO: Add your control notification handler code here
 	CString str;
 	wake_up_server_url.GetWindowTextW(str);
+	if (!str.IsEmpty()) {
+		int length = str.GetLength();
+		TCHAR lastChar = str.GetAt(length - 1);
+		if (lastChar != '/') {
+			str = str + TEXT("/");
+		}
+	}
 	global_wake_up_server_url = str;
 	AfxGetApp()->WriteProfileString(_T("Settings"), _T("GlobalVariable"), global_wake_up_server_url);
 	if (getWakeUpServerMode()) {

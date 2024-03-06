@@ -9,6 +9,8 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+extern CString global_wake_up_server_url;
+
 // CEditSignal dialog
 
 IMPLEMENT_DYNAMIC(CEditSignal, CDialogEx)
@@ -116,7 +118,8 @@ BOOL CEditSignal::OnInitDialog()
 
 void CEditSignal::GetRequestForTriggersCombo()
 {
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ wake_up_server_url + "triggers" });
 	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
 	for (const auto& item : jsonList_triggers) {
@@ -127,7 +130,8 @@ void CEditSignal::GetRequestForTriggersCombo()
 
 void CEditSignal::GetRequestForTargetsCombo()
 {
-	cpr::Response r_target_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_target_devices = cpr::Get(cpr::Url{ wake_up_server_url + "target_devices" });
 	nlohmann::json jsonList_target_devices = nlohmann::json::parse(r_target_devices.text);
 
 	for (const auto& item : jsonList_target_devices) {
@@ -143,7 +147,8 @@ void CEditSignal::OnCbnSelchangeCombo1()
 	CString str;
 	cb_trigger_name.GetLBText(index, str);
 
-	cpr::Response r_triggers = cpr::Get(cpr::Url{ "http://localhost:5001/triggers" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_triggers = cpr::Get(cpr::Url{ wake_up_server_url + "triggers" });
 	nlohmann::json jsonList_triggers = nlohmann::json::parse(r_triggers.text);
 
 	for (const auto& item : jsonList_triggers) {
@@ -180,7 +185,8 @@ void CEditSignal::OnCbnSelchangeCombo3()
 	CString str;
 	cb_target_id.GetLBText(index, str);
 
-	cpr::Response r_target_devices = cpr::Get(cpr::Url{ "http://localhost:5001/target_devices" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r_target_devices = cpr::Get(cpr::Url{ wake_up_server_url + "target_devices" });
 	nlohmann::json jsonList_target_devices = nlohmann::json::parse(r_target_devices.text);
 
 	for (const auto& item : jsonList_target_devices) {

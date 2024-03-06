@@ -8,6 +8,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+extern CString global_wake_up_server_url;
 extern BOOL getWakeUpServerMode();
 
 // CPatientRecordDlg
@@ -109,7 +110,8 @@ void CPatientRecordDlg::checkWakeUpServerMode()
 void CPatientRecordDlg::getRequestPatient()
 {
 	m_patient_record.DeleteAllItems();
-	cpr::Response r = cpr::Get(cpr::Url{ "http://localhost:5001/users" });
+	std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+	cpr::Response r = cpr::Get(cpr::Url{ wake_up_server_url + "users" });
 	nlohmann::json jsonList = nlohmann::json::parse(r.text);
 
 	for (const auto& item : jsonList) {
@@ -154,7 +156,9 @@ void CPatientRecordDlg::OnBnClickedButton1()
 				std::string std_edit_last_name = CT2A(edit_last_name);
 				std::string std_edit_gosh_id = CT2A(edit_gosh_id);
 
-				cpr::Response response = cpr::Post(cpr::Url{ "http://localhost:5001/users" },
+
+				std::string wake_up_server_url = CT2A(global_wake_up_server_url);
+				cpr::Response response = cpr::Post(cpr::Url{ wake_up_server_url + "users" },
 					cpr::Header{ {"Content-Type", "application/json"} },
 					cpr::Body{ "{ \"first_name\": \"" + str_edit_first_name +
 							   "\", \"last_name\": \"" + std_edit_last_name +
@@ -165,7 +169,6 @@ void CPatientRecordDlg::OnBnClickedButton1()
 					AfxMessageBox(_T("Successly added!"), MB_ICONINFORMATION | MB_OK);
 				}
 				else {
-					//auto json_error = nlohmann::json::parse(response.text);
 					std::string error_message = response.text;
 					CString m_error_message(error_message.c_str());
 
