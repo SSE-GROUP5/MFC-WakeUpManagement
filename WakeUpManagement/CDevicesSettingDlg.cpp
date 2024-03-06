@@ -5,6 +5,7 @@
 #include "WakeUpManagement.h"
 #include "CDevicesSettingDlg.h"
 #include "CAddTrigger.h"
+#include "CAddTarget.h"
 #include <cpr/cpr.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -37,6 +38,7 @@ BEGIN_MESSAGE_MAP(CDevicesSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDevicesSettingDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDevicesSettingDlg::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDevicesSettingDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDevicesSettingDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -104,12 +106,12 @@ void CDevicesSettingDlg::OnInitialUpdate()
 		m_ToolTip.Activate(TRUE);
 	}
 
-	checkWakeUpServerMode();
+	checkWakeUpServerMode(wake_up_server_mode);
 }
 
-void CDevicesSettingDlg::checkWakeUpServerMode()
+void CDevicesSettingDlg::checkWakeUpServerMode(BOOL mode)
 {
-	if (wake_up_server_mode) {
+	if (mode) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
 		GetRequestTriggers();
@@ -217,6 +219,21 @@ void CDevicesSettingDlg::OnBnClickedButton4()
 void CDevicesSettingDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
-	GetRequestTriggers();
-	GetRequestTargetDevices();
+	checkWakeUpServerMode(getWakeUpServerMode());
+}
+
+
+void CDevicesSettingDlg::OnBnClickedButton2()
+{
+	// TODO: Add your control notification handler code here
+	if (getWakeUpServerMode()) {
+		CAddTarget dlg;
+		if (dlg.DoModal() == IDOK)
+		{
+			GetRequestTargetDevices();
+		}
+	}
+	else {
+		AfxMessageBox(TEXT("Wake Up Server has not been Connected!"));
+	}
 }

@@ -194,6 +194,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CAddSignal.h" />
+    <ClInclude Include="CAddTarget.h" />
     <ClInclude Include="CAddTrigger.h" />
     <ClInclude Include="CDeleteSignal.h" />
     <ClInclude Include="CDevicesSettingDlg.h" />
@@ -217,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CAddSignal.cpp" />
+    <ClCompile Include="CAddTarget.cpp" />
     <ClCompile Include="CAddTrigger.cpp" />
     <ClCompile Include="CDeleteSignal.cpp" />
     <ClCompile Include="CDevicesSettingDlg.cpp" />
