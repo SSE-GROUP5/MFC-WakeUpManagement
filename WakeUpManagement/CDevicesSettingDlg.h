@@ -41,6 +41,7 @@ private:
 	bool wake_up_server_mode;
 public:
 	afx_msg void OnBnClickedButton4();
+	afx_msg void OnBnClickedButton3();
 };
 
 

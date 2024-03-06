@@ -36,6 +36,7 @@ void CDevicesSettingDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDevicesSettingDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDevicesSettingDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDevicesSettingDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON3, &CDevicesSettingDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -210,4 +211,12 @@ void CDevicesSettingDlg::OnBnClickedButton4()
 
 	// Open the system file explorer at the specified folder
 	ShellExecute(NULL, _T("explore"), cstring, NULL, NULL, SW_SHOWNORMAL);
+}
+
+
+void CDevicesSettingDlg::OnBnClickedButton3()
+{
+	// TODO: Add your control notification handler code here
+	GetRequestTriggers();
+	GetRequestTargetDevices();
 }

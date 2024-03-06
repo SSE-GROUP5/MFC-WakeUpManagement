@@ -124,9 +124,12 @@ BOOL CAddTrigger::OnInitDialog()
 	// TODO:  Add extra initialization here
 	trigger_wake_up_server_url.SetWindowText(_T("http://localhost:5001"));
 	trigger_zmq_url.SetWindowText(_T("tcp://127.0.0.1:5556"));
-	trigger_type.AddString(_T("Vision"));
-	trigger_type.AddString(_T("Sound"));
 	trigger_type.AddString(_T("blink_detect"));
+	trigger_type.AddString(_T("morse_vision"));
+	trigger_type.AddString(_T("morse_audio"));
+	trigger_type.AddString(_T("fall_detection"));
+	trigger_type.AddString(_T("fall_upper_detection"));
+	trigger_type.AddString(_T("whisper"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
