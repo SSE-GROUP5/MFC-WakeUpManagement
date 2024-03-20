@@ -44,7 +44,6 @@ void CDeleteSignal::OnBnClickedOk()
 
 	std::string str_trigger_name = CT2A(trigger_name);
 	std::string std_trigger_action = CT2A(trigger_action);
-	int int_trigger_value = _ttoi(trigger_value);
 	std::string std_target_id = CT2A(target_id);
 	std::string std_target_action = CT2A(target_action);
 	std::string std_user_id = CT2A(user_id);
@@ -58,7 +57,12 @@ void CDeleteSignal::OnBnClickedOk()
 		const auto& signalsArray = jsonList["signals"];
 		for (const auto& item : signalsArray) {
 			CString get_trigger_value;
-			get_trigger_value.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+			try {
+				get_trigger_value = CString(item["trigger_num_actions"].get<std::string>().c_str());
+			}
+			catch (...) {
+				get_trigger_value.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+			}
 			if (trigger_name == CString(item["trigger_name"].get<std::string>().c_str()) &&
 				trigger_action == CString(item["trigger_action"].get<std::string>().c_str()) &&
 				trigger_value == get_trigger_value &&
