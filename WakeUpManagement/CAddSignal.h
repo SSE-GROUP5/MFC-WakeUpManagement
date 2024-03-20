@@ -26,6 +26,7 @@ public:
 	afx_msg void OnCbnSelchangeCombo1();
 	afx_msg void OnCbnSelchangeCombo3();
 	afx_msg void OnBnClickedOk();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 private:
 	void GetRequestForTriggersCombo();
 	void GetRequestForTargetsCombo();
@@ -36,6 +37,4 @@ private:
 	CComboBox cb_target_id;
 	CComboBox cb_target_action;
 	CToolTipCtrl m_ToolTip;
-public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

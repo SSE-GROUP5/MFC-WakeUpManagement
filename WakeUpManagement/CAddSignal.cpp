@@ -203,7 +203,7 @@ void CAddSignal::OnBnClickedOk()
 		for (const auto& item : signalsArray) {
 			CString get_trigger_value;
 			try {
-				get_trigger_value == CString(item["trigger_num_actions"].get<std::string>().c_str());
+				get_trigger_value = CString(item["trigger_num_actions"].get<std::string>().c_str());
 			}
 			catch (...) {
 				get_trigger_value.Format(_T("%d"), item["trigger_num_actions"].get<int>());
@@ -224,34 +224,36 @@ void CAddSignal::OnBnClickedOk()
 	if (postRequest) {
 		std::string std_trigger_name = CT2A(trigger_name);
 		std::string std_trigger_action = CT2A(trigger_action);
-		std::string std_trigger_num_actions = CT2A(trigger_num_actions);
 		std::string std_target_id = CT2A(target_id);
 		std::string std_target_action = CT2A(target_action);
 		std::string std_user_id = CT2A(user_id);
+
+		nlohmann::json jsonBody;
+		if (std_trigger_action == "sound_classification" || std_trigger_action == "vision_blink") {
+			jsonBody["trigger_num_actions"] = _ttoi(trigger_num_actions);
+		}
+		else {
+			jsonBody["trigger_num_actions"] = CT2A(trigger_num_actions);
+		}
+		jsonBody["trigger_name"] = std_trigger_name;
+		jsonBody["trigger_action"] = std_trigger_action;
+		jsonBody["target_device_id"] = std_target_id;
+		jsonBody["target_action"] = std_target_action;
 
 		cpr::Response response;
 		std::string wake_up_server_url = CT2A(global_wake_up_server_url);
 		if (!user_id.IsEmpty())
 		{
-
+			jsonBody["user_id"] = std_user_id;
 			response = cpr::Post(cpr::Url{ wake_up_server_url + "signals/set" },
 				cpr::Header{ {"Content-Type", "application/json"} },
-				cpr::Body{ "{ \"trigger_name\": \"" + std_trigger_name +
-						   "\", \"trigger_action\": \"" + std_trigger_action +
-						   "\", \"trigger_num_actions\": \"" + std_trigger_num_actions +
-						   "\", \"target_device_id\": \"" + std_target_id +
-						   "\", \"target_action\": \"" + std_target_action +
-						   "\", \"user_id\": \"" + std_user_id + "\" }" });
+				cpr::Body{ jsonBody.dump() });
 		}
 		else
 		{
 			response = cpr::Post(cpr::Url{ wake_up_server_url + "signals/set" },
 				cpr::Header{ {"Content-Type", "application/json"} },
-				cpr::Body{ "{ \"trigger_name\": \"" + std_trigger_name +
-						   "\", \"trigger_action\": \"" + std_trigger_action +
-						   "\", \"trigger_num_actions\": \"" + std_trigger_num_actions +
-						   "\", \"target_device_id\": \"" + std_target_id +
-						   "\", \"target_action\": \"" + std_target_action + "\" }" });
+				cpr::Body{ jsonBody.dump() });
 		}
 
 		if (response.status_code == 201) {
