@@ -63,11 +63,6 @@ void CPatientRecordDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	checkWakeUpServerMode();
-	// Creates a 12-point-Courier-font
-	m_Title_Font.CreatePointFont(180, _T("Calibri"));
-	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
-
 	CRect rect;
 	m_patient_record.GetWindowRect(&rect);
 	ScreenToClient(&rect);
@@ -91,6 +86,11 @@ void CPatientRecordDlg::OnInitialUpdate()
 		m_ToolTip.AddTool(tooltip_gosh_id, _T("Gosh ID should start with XXXXX"));
 		m_ToolTip.Activate(TRUE);
 	}
+
+	checkWakeUpServerMode();
+	// Creates a 12-point-Courier-font
+	m_Title_Font.CreatePointFont(180, _T("Calibri"));
+	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 }
 
 void CPatientRecordDlg::checkWakeUpServerMode()

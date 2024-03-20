@@ -66,16 +66,15 @@ void CDevicesSettingDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	checkWakeUpServerMode();
 	CRect rect_triggers;
 	m_triggers.GetWindowRect(&rect_triggers);
 	ScreenToClient(&rect_triggers);
-	m_triggers.MoveWindow(rect_triggers.left, rect_triggers.top, 854, 850, TRUE);
+	m_triggers.MoveWindow(rect_triggers.left, rect_triggers.top, 924, 850, TRUE);
 
 	m_triggers.InsertColumn(1, TEXT("ID"), LVCFMT_CENTER, 400);
 	m_triggers.InsertColumn(2, TEXT("Name"), LVCFMT_CENTER, 150);
-	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 150);
-	m_triggers.InsertColumn(4, TEXT("Confirmed"), LVCFMT_CENTER, 150);
+	m_triggers.InsertColumn(3, TEXT("Type"), LVCFMT_CENTER, 250);
+	m_triggers.InsertColumn(4, TEXT("Confirmed"), LVCFMT_CENTER, 120);
 	m_triggers.SetExtendedStyle(m_triggers.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	CRect rect_targets;
@@ -105,7 +104,7 @@ void CDevicesSettingDlg::OnInitialUpdate()
 
 		m_ToolTip.Activate(TRUE);
 	}
-
+	checkWakeUpServerMode();
 }
 
 void CDevicesSettingDlg::checkWakeUpServerMode()

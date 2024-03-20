@@ -74,11 +74,6 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 
-	checkWakeUpServerMode();
-	// Creates a 12-point-Courier-font
-	m_Title_Font.CreatePointFont(180, _T("Calibri"));
-	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
-
 	CRect rect;
 	m_wake_up_setting_list.GetWindowRect(&rect);
 	ScreenToClient(&rect);
@@ -91,6 +86,10 @@ void CWakeUpSettingDlg::OnInitialUpdate()
 	m_wake_up_setting_list.InsertColumn(5, TEXT("Target Action"), LVCFMT_CENTER, 250);
 	m_wake_up_setting_list.SetExtendedStyle(m_wake_up_setting_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
+	checkWakeUpServerMode();
+	// Creates a 12-point-Courier-font
+	m_Title_Font.CreatePointFont(180, _T("Calibri"));
+	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 }
 
 void CWakeUpSettingDlg::checkWakeUpServerMode()
