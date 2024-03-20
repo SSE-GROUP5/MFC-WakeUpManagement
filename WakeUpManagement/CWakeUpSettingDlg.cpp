@@ -155,7 +155,12 @@ void CWakeUpSettingDlg::GetRequestSignalsForDefaultUser()
 				CString target_id = CString(item["target_id"].get<std::string>().c_str());
 				CString target_action = CString(item["target_action"].get<std::string>().c_str());
 				CString trigger_num_actions;
-				trigger_num_actions.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+				try {
+					trigger_num_actions = CString(item["trigger_num_actions"].get<std::string>().c_str());
+				}
+				catch (...) {
+					trigger_num_actions.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+				}
 				
 				// Add the data to the list control
 				int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), trigger_name);
@@ -219,7 +224,12 @@ void CWakeUpSettingDlg::GetRequestSignalsForAUser(CString str)
 			CString target_id = CString(item["target_id"].get<std::string>().c_str());
 			CString target_action = CString(item["target_action"].get<std::string>().c_str());
 			CString trigger_num_actions;
-			trigger_num_actions.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+			try {
+				trigger_num_actions = CString(item["trigger_num_actions"].get<std::string>().c_str());
+			}
+			catch (...) {
+				trigger_num_actions.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+			}
 
 			// Add the data to the list control
 			int index = m_wake_up_setting_list.InsertItem(m_wake_up_setting_list.GetItemCount(), trigger_name);

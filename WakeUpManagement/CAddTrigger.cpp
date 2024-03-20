@@ -122,7 +122,7 @@ BOOL CAddTrigger::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  Add extra initialization here
-	trigger_wake_up_server_url.SetWindowText(_T("http://localhost:5001"));
+	trigger_wake_up_server_url.SetWindowText(global_wake_up_server_url);
 	trigger_zmq_url.SetWindowText(_T("tcp://127.0.0.1:5556"));
 	trigger_type.AddString(_T("sound_classification"));
 	trigger_type.AddString(_T("sound_whisper"));

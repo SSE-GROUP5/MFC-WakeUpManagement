@@ -187,7 +187,6 @@ void CAddSignal::OnBnClickedOk()
 	cb_target_action.GetWindowTextW(target_action);
 	GetDlgItem(IDC_TEXT_USER_ID)->GetWindowTextW(user_id);
 	boolean postRequest = true;
-
 	if (trigger_name.IsEmpty() || trigger_action.IsEmpty() || trigger_num_actions.IsEmpty() ||
 		target_id.IsEmpty() || target_action.IsEmpty()) {
 		postRequest = false;
@@ -203,7 +202,12 @@ void CAddSignal::OnBnClickedOk()
 		const auto& signalsArray = jsonList["signals"];
 		for (const auto& item : signalsArray) {
 			CString get_trigger_value;
-			get_trigger_value.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+			try {
+				get_trigger_value == CString(item["trigger_num_actions"].get<std::string>().c_str());
+			}
+			catch (...) {
+				get_trigger_value.Format(_T("%d"), item["trigger_num_actions"].get<int>());
+			}
 			if (trigger_name == CString(item["trigger_name"].get<std::string>().c_str()) &&
 				trigger_action == CString(item["trigger_action"].get<std::string>().c_str()) &&
 				trigger_num_actions == get_trigger_value &&
@@ -217,7 +221,6 @@ void CAddSignal::OnBnClickedOk()
 			}
 		}
 	}
-
 	if (postRequest) {
 		std::string std_trigger_name = CT2A(trigger_name);
 		std::string std_trigger_action = CT2A(trigger_action);
