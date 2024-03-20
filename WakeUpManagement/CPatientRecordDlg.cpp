@@ -18,7 +18,7 @@ IMPLEMENT_DYNCREATE(CPatientRecordDlg, CFormView)
 CPatientRecordDlg::CPatientRecordDlg()
 	: CFormView(IDD_DIALOG_PATIENT_RECORD)
 {
-	wake_up_server_mode = getWakeUpServerMode();
+
 }
 
 CPatientRecordDlg::~CPatientRecordDlg()
@@ -63,6 +63,7 @@ void CPatientRecordDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
+	checkWakeUpServerMode();
 	// Creates a 12-point-Courier-font
 	m_Title_Font.CreatePointFont(180, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
@@ -90,13 +91,11 @@ void CPatientRecordDlg::OnInitialUpdate()
 		m_ToolTip.AddTool(tooltip_gosh_id, _T("Gosh ID should start with XXXXX"));
 		m_ToolTip.Activate(TRUE);
 	}
-
-	checkWakeUpServerMode();
 }
 
 void CPatientRecordDlg::checkWakeUpServerMode()
 {
-	if (wake_up_server_mode) {
+	if (getWakeUpServerMode()) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
 		getRequestPatient();

@@ -15,7 +15,7 @@ IMPLEMENT_DYNCREATE(CSettings, CFormView)
 CSettings::CSettings()
 	: CFormView(IDD_SETTINGS)
 {
-	wake_up_server_mode = getWakeUpServerMode();
+
 }
 
 CSettings::~CSettings()
@@ -56,16 +56,16 @@ void CSettings::Dump(CDumpContext& dc) const
 void CSettings::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
+	checkWakeUpServerMode();
 	m_Title_Font.CreatePointFont(180, _T("Calibri"));
 	GetDlgItem(IDC_STATIC)->SetFont(&m_Title_Font);
 	// TODO: Add your specialized code here and/or call the base class
 	wake_up_server_url.SetWindowTextW(global_wake_up_server_url);
-	checkWakeUpServerMode();
 }
 
 void CSettings::checkWakeUpServerMode()
 {
-	if (wake_up_server_mode) {
+	if (getWakeUpServerMode()) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Successfully Reach!"));
 	}

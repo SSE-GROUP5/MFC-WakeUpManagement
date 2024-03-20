@@ -39,7 +39,6 @@ private:
 	void getRequestPatient();
 	CToolTipCtrl m_ToolTip;
 	void checkWakeUpServerMode();
-	bool wake_up_server_mode;
 };
 
 

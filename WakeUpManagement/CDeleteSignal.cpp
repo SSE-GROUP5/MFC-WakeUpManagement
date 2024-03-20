@@ -68,7 +68,7 @@ void CDeleteSignal::OnBnClickedOk()
 				trigger_value == get_trigger_value &&
 				target_id == CString(item["target_id"].get<std::string>().c_str()) &&
 				target_action == CString(item["target_action"].get<std::string>().c_str()) &&
-				(user_id.IsEmpty() && item["user_id"].is_null() || user_id == CString(item["user_id"].get<std::string>().c_str())))
+				(user_id.IsEmpty() && item["user_id"].is_null() || !item["user_id"].is_null() && user_id == CString(item["user_id"].get<std::string>().c_str())))
 			{
 				std::string signal_id = item["id"].get<std::string>();
 				response_delete = cpr::Delete(cpr::Url{ wake_up_server_url + "signals/" + signal_id },

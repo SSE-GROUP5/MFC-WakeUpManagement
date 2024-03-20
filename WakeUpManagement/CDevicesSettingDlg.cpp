@@ -20,7 +20,7 @@ IMPLEMENT_DYNCREATE(CDevicesSettingDlg, CFormView)
 CDevicesSettingDlg::CDevicesSettingDlg()
 	: CFormView(IDD_DIALOG_DEVICES_SETTING)
 {
-	wake_up_server_mode = getWakeUpServerMode();
+
 }
 
 CDevicesSettingDlg::~CDevicesSettingDlg()
@@ -66,7 +66,7 @@ void CDevicesSettingDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-
+	checkWakeUpServerMode();
 	CRect rect_triggers;
 	m_triggers.GetWindowRect(&rect_triggers);
 	ScreenToClient(&rect_triggers);
@@ -106,12 +106,11 @@ void CDevicesSettingDlg::OnInitialUpdate()
 		m_ToolTip.Activate(TRUE);
 	}
 
-	checkWakeUpServerMode(wake_up_server_mode);
 }
 
-void CDevicesSettingDlg::checkWakeUpServerMode(BOOL mode)
+void CDevicesSettingDlg::checkWakeUpServerMode()
 {
-	if (mode) {
+	if (getWakeUpServerMode()) {
 		// Update the control after the HTTP response is checked
 		SetDlgItemTextW(IDC_WAKE_UP_SERVER, TEXT("Wake Up Server: ON"));
 		GetRequestTriggers();
@@ -219,7 +218,7 @@ void CDevicesSettingDlg::OnBnClickedButton4()
 void CDevicesSettingDlg::OnBnClickedButton3()
 {
 	// TODO: Add your control notification handler code here
-	checkWakeUpServerMode(getWakeUpServerMode());
+	checkWakeUpServerMode();
 }
 
 

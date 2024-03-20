@@ -38,7 +38,6 @@ private:
 	CComboBox cb_users;
 	CComboBox cb_triggers;
 	CComboBox cb_targets;
-	bool wake_up_server_mode;
 	void GetRequestSignalsForDefaultUser();
 	void GetRequestSignalsForAUser(CString str);
 	void GetRequestUsers();
